@@ -6,6 +6,10 @@ import FormElement from './FormElement';
 
 export default class Form extends React.Component {
   renderFormElement(element) {
+    if (! element){
+      return element;
+    }
+
     const klass = element.type;
     if (!klass.isFormElement) {
       const { id = `form-element-${uuid()}`, label, required, error, totalCols, cols, children, ...props } = element.props;
