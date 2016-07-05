@@ -326,7 +326,7 @@ class LookupCandidateList extends Component {
   }
 
   render() {
-    const { data = [], hidden, loading, header, footer, filter = () => true } = this.props;
+    const { data = [], hidden, loading, header, footer, spinnerSrc, filter = () => true } = this.props;
     const lookupMenuClassNames = classnames(
       'slds-lookup__menu',
       { 'slds-hide': hidden }
@@ -347,7 +347,7 @@ class LookupCandidateList extends Component {
           {
             loading ?
             <li className='slds-lookup__item' key='loading'>
-              <Spinner size='small' style={ { margin: '0 auto' } } />
+              <Spinner spinnerSrc={ spinnerSrc } size='small' style={ { margin: '0 auto' } } />
             </li> :
             undefined
           }
@@ -373,6 +373,7 @@ LookupCandidateList.propTypes = {
   onBlur: PropTypes.func,
   header: PropTypes.node,
   footer: PropTypes.node,
+  spinnerSrc: PropTypes.string
 };
 
 
@@ -514,7 +515,8 @@ export default class Lookup extends Component {
       data,
       onSelect, onBlur, onComplete,
       onScopeChange, onScopeMenuClick, onSearchTextChange, onLookupRequest,
-      ...props,
+      spinnerSrc,
+      ...props
     } = this.props;
     const dropdown = (
       <LookupCandidateList
@@ -526,6 +528,7 @@ export default class Lookup extends Component {
         filter={ lookupFilter ? (entry) => lookupFilter(entry, searchText, targetScope) : undefined }
         header={ listHeader }
         footer={ listFooter }
+        spinnerSrc={ spinnerSrc }
         onSelect={ this.onLookupItemSelect.bind(this) }
         onBlur={ this.onBlur.bind(this) }
       />

@@ -3,6 +3,13 @@ import classnames from 'classnames';
 
 
 export default class RadioGroup extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.onControlChange = this.onControlChange.bind(this);
+    this.renderControl = this.renderControl.bind(this);
+  }
+
   onControlChange(value, e) {
     if (this.props.onChange) {
       this.props.onChange(e, value);
@@ -12,7 +19,7 @@ export default class RadioGroup extends React.Component {
   renderControl(radio) {
     return (
       this.props.name ?
-      React.cloneElement(radio, { name: this.props.name, onChange: this.onControlChange.bind(this, radio.props.value), ...this.props }) :
+      React.cloneElement(radio, { name: this.props.name, onChange: this.onControlChange , ...this.props } ) :
       radio
     );
   }
@@ -36,7 +43,7 @@ export default class RadioGroup extends React.Component {
        undefined) :
       undefined;
     return (
-      <fieldset className={ grpClassNames } style={ grpStyles } { ...props } >
+      <fieldset onChange={ onChange } className={ grpClassNames } style={ grpStyles } { ...props } >
         <legend className='slds-form-element__label slds-form-element__label--top'>
           { label }
           {
@@ -46,7 +53,7 @@ export default class RadioGroup extends React.Component {
           }
         </legend>
         <div className='slds-form-element__control'>
-          { React.Children.map(children, this.renderControl.bind(this)) }
+          { React.Children.map(children, this.renderControl) }
           {
             errorMessage ?
             <div className='slds-form-element__help'>{ errorMessage }</div> :

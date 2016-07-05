@@ -4,16 +4,19 @@ import util from './util';
 
 
 export default class Spinner extends React.Component {
+
   render() {
-    const { className, size, type, alt, ...props } = this.props;
+    const { className, size, type, alt, spinnerSrc, ...props } = this.props;
     const spinnerClassNames = classnames(className, `slds-spinner--${size}`);
     const spinnerImgName =
       type === 'brand' ? 'slds_spinner_brand' :
       type === 'inverse' ? 'slds_spinner_inverse' :
       'slds_spinner';
+    const finalSpinnerSrc = spinnerSrc || `${util.getAssetRoot()}/images/spinners/${spinnerImgName}.gif`
+
     return (
       <div className={ spinnerClassNames } { ...props }>
-        <img src={ `${util.getAssetRoot()}/images/spinners/${spinnerImgName}.gif` } alt={ alt } />
+        <img src={ finalSpinnerSrc } alt={ alt } />
       </div>
     );
   }
