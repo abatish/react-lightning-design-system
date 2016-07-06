@@ -45,6 +45,7 @@ export default class CheckboxGroup extends React.Component {
       typeof totalCols === 'number' ? `slds-size--${cols || 1}-of-${totalCols}` : null
     );
     const grpStyles = typeof totalCols === 'number' ? { display: 'inline-block', ...style } : style;
+    const horizontalStyle = {display: 'flex',	flexFlow: 'row nowrap'};
     const errorMessage =
       error ?
       (typeof error === 'string' ? error :
@@ -61,7 +62,7 @@ export default class CheckboxGroup extends React.Component {
             undefined
           }
         </legend>
-        <div className='slds-form-element__control'>
+        <div className='slds-form-element__control' style={this.props.alignment === 'horizontal' ? horizontalStyle :{}}>
           { React.Children.map(children, this.renderControl) }
           {
             errorMessage ?
