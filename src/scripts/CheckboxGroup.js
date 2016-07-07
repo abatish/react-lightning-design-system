@@ -26,7 +26,7 @@ export default class CheckboxGroup extends React.Component {
   }
 
   renderControl(checkbox, i) {
-    const props = { grouped: true , ... this.props };
+    const props = { grouped: true };
     if (this.props.name) {
       props.name = this.props.name;
     }
