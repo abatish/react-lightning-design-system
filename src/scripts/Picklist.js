@@ -1,64 +1,65 @@
-import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
+import React, { PropTypes, Component } from 'react';
 import classnames from 'classnames';
-import uuid from 'uuid';
 import FormElement from './FormElement';
 import Icon from './Icon';
+import Button from './Button';
 import { default as DropdownMenu, DropdownMenuItem } from './DropdownMenu';
+import { uuid } from './util';
 
 
-export default class Picklist extends React.Component {
+export default class Picklist extends Component {
   constructor(props) {
     super(props);
+
+    const initialValue = props.value || props.defaultValue;
+
     this.state = {
       id: `form-element-${uuid()}`,
       opened: props.defaultOpened,
-      value: props.defaultValue,
+      value: Array.isArray(initialValue) ? initialValue : [initialValue],
     };
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.onValueChange && prevState.value !== this.state.value) {
-      this.props.onValueChange(this.state.value, prevState.value);
-    }
-  }
-
-  onClick() {
+  onClick = () => {
     this.setState({ opened: !this.state.opened });
     setTimeout(() => {
       this.focusToTargetItemEl();
     }, 10);
-  }
+  };
 
-  onPicklistItemClick(item, e) {
-    this.setState({ value: item.value });
+  onPicklistItemClick = (item, e) => {
+    const { multiSelect } = this.props;
+    this.updateItemValue(item.value);
+
     if (this.props.onChange) {
       this.props.onChange(e, item.value);
     }
     if (this.props.onSelect) {
       this.props.onSelect(item);
     }
-    setTimeout(() => {
-      this.setState({ opened: false });
-      if (this.props.onComplete) {
-        this.props.onComplete();
-      }
-      const picklistButtonEl = ReactDOM.findDOMNode(this.refs.picklistButton);
-      if (picklistButtonEl) {
-        picklistButtonEl.focus();
-      }
-    }, 200);
+    if (!multiSelect) {  // close if only single select
+      setTimeout(() => {
+        this.setState({ opened: false });
+        if (this.props.onComplete) {
+          this.props.onComplete();
+        }
+        const picklistButtonEl = this.picklistButton;
+        if (picklistButtonEl) {
+          picklistButtonEl.focus();
+        }
+      }, 200);
+    }
     e.preventDefault();
     e.stopPropagation();
-  }
+  };
 
-  onPicklistClose() {
-    const picklistButtonEl = ReactDOM.findDOMNode(this.refs.picklistButton);
+  onPicklistClose = () => {
+    const picklistButtonEl = this.picklistButton;
     picklistButtonEl.focus();
     this.setState({ opened: false });
-  }
+  };
 
-  onBlur() {
+  onBlur = () => {
     setTimeout(() => {
       if (!this.isFocusedInComponent()) {
         this.setState({ opened: false });
@@ -70,9 +71,9 @@ export default class Picklist extends React.Component {
         }
       }
     }, 10);
-  }
+  };
 
-  onKeydown(e) {
+  onKeydown = (e) => {
     if (e.keyCode === 40) { // down
       e.preventDefault();
       e.stopPropagation();
@@ -95,30 +96,81 @@ export default class Picklist extends React.Component {
     if (this.props.onKeyDown) {
       this.props.onKeyDown(e);
     }
+  };
+
+  getValue() {
+    const { value } = this.props;
+    // for controlled behavior returning value from props
+    if (value) {
+      return Array.isArray(value) ? value : [value];
+    }
+    // for uncontrolled - value from state
+    return this.state.value;
   }
 
-  getSelectedValue() {
-    const { defaultValue, value } = this.props;
-    return (
-      typeof value !== 'undefined' ? value :
-      typeof this.state.value !== 'undefined' ? this.state.value :
-      defaultValue
-    );
+  setValue(newValue) {
+    const { multiSelect, onValueChange } = this.props;
+    const prevValue = this.getValue();
+    this.setState({ value: newValue });
+
+    // this is for controlled behavior
+    if (onValueChange && prevValue !== newValue) {
+      if (multiSelect) {
+        onValueChange(newValue, prevValue);
+      } else {
+        onValueChange(newValue.length > 0 ? newValue[0] : undefined,
+          prevValue.length > 0 ? prevValue[0] : undefined);
+      }
+    }
   }
 
   getSelectedItemLabel() {
-    const selectedValue = this.getSelectedValue();
-    let selected = null;
-    React.Children.forEach(this.props.children, (item) => {
-      if (item.props.value === selectedValue) {
-        selected = item.props.label || item.props.children;
+    const selectedValues = this.getValue();
+
+    // many items selected
+    if (selectedValues.length > 1) {
+      return this.props.optionsSelectedText;
+    }
+
+    // one item
+    if (selectedValues.length === 1) {
+      const selectedValue = selectedValues[0];
+      let selected = null;
+      React.Children.forEach(this.props.children, (item) => {
+        if (item.props.value === selectedValue) {
+          selected = item.props.label || item.props.children;
+        }
+      });
+      return selected || selectedValue;
+    }
+
+    // zero items
+    return this.props.selectedText;
+  }
+
+  updateItemValue(itemValue) {
+    const { multiSelect } = this.props;
+
+    if (multiSelect) {
+      const newValue = this.getValue().slice();
+
+      // toggle value
+      if (newValue.indexOf(itemValue) === -1) {
+        // add value to array
+        newValue.push(itemValue);
+      } else {
+        // remove from array
+        newValue.splice(newValue.indexOf(itemValue), 1);
       }
-    });
-    return (selected || this.props.selectedText);
+      this.setValue(newValue);
+    } else {
+      // set only one value
+      this.setValue([itemValue]);
+    }
   }
 
   isFocusedInComponent() {
-    const rootEl = ReactDOM.findDOMNode(this);
+    const rootEl = this.node;
     let targetEl = document.activeElement;
     while (targetEl && targetEl !== rootEl) {
       targetEl = targetEl.parentNode;
@@ -127,7 +179,7 @@ export default class Picklist extends React.Component {
   }
 
   focusToTargetItemEl() {
-    const dropdownEl = ReactDOM.findDOMNode(this.refs.dropdown);
+    const dropdownEl = this.dropdown;
     const firstItemEl =
       dropdownEl.querySelector('.slds-is-selected > .react-slds-menuitem[tabIndex]') ||
       dropdownEl.querySelector('.react-slds-menuitem[tabIndex]');
@@ -137,55 +189,64 @@ export default class Picklist extends React.Component {
   }
 
   renderPicklist(props) {
-    const { className, id, menuSize, children, ...pprops } = props;
+    const { className, id, ...pprops } = props;
     const picklistClassNames = classnames(className, 'slds-picklist');
+    delete pprops.onValueChange;
     return (
       <div className={ picklistClassNames } aria-expanded={ this.state.opened }>
-        <button id={ id } ref='picklistButton' className='slds-picklist__label slds-button slds-button--neutral'
-          type='button' aria-haspopup { ...pprops }
-          onClick={ this.onClick.bind(this) }
-          onBlur={ this.onBlur.bind(this) }
-          onKeyDown={ this.onKeydown.bind(this) }
+        <Button
+          id={ id }
+          buttonRef={ node => (this.picklistButton = node) }
+          className='slds-picklist__label'
+          type='neutral'
+          onClick={ this.onClick }
+          onBlur={ this.onBlur }
+          onKeyDown={ this.onKeydown }
         >
-          <span className='slds-truncate'>{ this.getSelectedItemLabel() || <span>&nbsp;</span> }</span>
+          <span className='slds-truncate'>
+            { this.getSelectedItemLabel() || <span>&nbsp;</span> }
+          </span>
           <Icon icon='down' />
-        </button>
+        </Button>
       </div>
     );
   }
 
-  renderDropdown() {
-    const { menuSize, children } = this.props;
+  renderDropdown(menuSize, menuStyle) {
+    const { children } = this.props;
     return (
       this.state.opened ?
-      <DropdownMenu ref='dropdown' size={ menuSize }
-        onMenuItemClick={ this.onPicklistItemClick.bind(this) }
-        onMenuClose={ this.onPicklistClose.bind(this) }
-      >
-        { React.Children.map(children, this.renderPicklistItem.bind(this)) }
-      </DropdownMenu> :
-      <div ref='dropdown' />
+        <DropdownMenu
+          dropdownMenuRef={ node => (this.dropdown = node) }
+          size={ menuSize }
+          onMenuItemClick={ this.onPicklistItemClick }
+          onMenuClose={ this.onPicklistClose }
+          style={ menuStyle }
+          onBlur={ this.onBlur }
+        >
+          { React.Children.map(children, this.renderPicklistItem) }
+        </DropdownMenu> :
+          <div ref={ node => (this.dropdown = node) } />
     );
   }
 
-  renderPicklistItem(item) {
-    const selected = item.props.value === this.getSelectedValue();
-    const onBlur = this.onBlur.bind(this);
+  renderPicklistItem = (item) => {
+    const selected = this.getValue().indexOf(item.props.value) !== -1;
+    const onBlur = this.onBlur;
     return React.cloneElement(item, { selected, onBlur });
-  }
+  };
 
   render() {
     const id = this.props.id || this.state.id;
-    const { label, required, error, totalCols, cols, ...props } = this.props;
-    const dropdown = this.renderDropdown();
+    const { label, required, error, totalCols, cols, menuSize, menuStyle, ...props } = this.props;
+    const dropdown = this.renderDropdown(menuSize, menuStyle);
     const formElemProps = { id, label, required, error, totalCols, cols, dropdown };
     return (
-      <FormElement { ...formElemProps }>
+      <FormElement formElementRef={ node => (this.node = node) } { ...formElemProps }>
         { this.renderPicklist({ ...props, id }) }
       </FormElement>
     );
   }
-
 }
 
 Picklist.propTypes = {
@@ -193,18 +254,27 @@ Picklist.propTypes = {
   className: PropTypes.string,
   label: PropTypes.string,
   required: PropTypes.bool,
-  error: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.string,
-    PropTypes.shape({
-      message: PropTypes.string,
-    }),
-  ]),
+  multiSelect: PropTypes.bool,
+  error: FormElement.propTypes.error,
   totalCols: PropTypes.number,
   cols: PropTypes.number,
   name: PropTypes.string,
-  value: PropTypes.any,
-  defaultValue: PropTypes.any,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.arrayOf(PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ])),
+  ]),
+  defaultValue: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.arrayOf(PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number,
+    ])),
+  ]),
   selectedText: PropTypes.string,
   defaultOpened: PropTypes.bool,
   onChange: PropTypes.func,
@@ -214,25 +284,32 @@ Picklist.propTypes = {
   onKeyDown: PropTypes.func,
   onBlur: PropTypes.func,
   menuSize: PropTypes.string,
+  menuStyle: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   children: PropTypes.node,
+  optionsSelectedText: PropTypes.string,
+};
+
+Picklist.defaultProps = {
+  multiSelect: false,
+  defaultValue: [],
+  selectedText: '',
+  optionsSelectedText: '',
 };
 
 
 Picklist.isFormElement = true;
 
 
-export class PicklistItem extends React.Component {
-
-  render() {
-    const { label, selected, value, children, ...props } = this.props;
-    return (
-      <DropdownMenuItem icon={ selected ? 'check' : 'none' } role='menuitemradio' selected={ selected } { ...props }>
-        { label || children }
-      </DropdownMenuItem>
-    );
-  }
-
-}
+export const PicklistItem = ({ label, selected, children, ...props }) => (
+  <DropdownMenuItem
+    icon={ selected ? 'check' : 'none' }
+    role='menuitemradio' // eslint-disable-line
+    selected={ selected }
+    { ...props }
+  >
+    { label || children }
+  </DropdownMenuItem>
+);
 
 PicklistItem.propTypes = {
   label: PropTypes.oneOfType([
@@ -240,6 +317,9 @@ PicklistItem.propTypes = {
     PropTypes.number,
   ]),
   selected: PropTypes.bool,
-  value: PropTypes.any,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
   children: PropTypes.node,
 };

@@ -1,14 +1,38 @@
-import React, { PropTypes } from 'react';
-import ReactDOM from 'react-dom';
+import React, { PropTypes, Component } from 'react';
 import classnames from 'classnames';
 import moment from 'moment';
 import Button from './Button';
-import { default as Picklist, PicklistItem } from './Picklist';
+import Select, { Option } from './Select';
+import { getToday } from './util';
 
-function createCalendarObject(date) {
+function createCalendarObject(date, mnDate, mxDate) {
+  let minDate;
+  let maxDate;
   let d = moment(date, 'YYYY-MM-DD');
   if (!d.isValid()) {
-    d = moment();
+    d = moment(getToday(), 'YYYY-MM-DD');
+  }
+  if (mnDate) {
+    const minD = moment(mnDate, 'YYYY-MM-DD');
+    if (minD.isValid()) {
+      minDate = {
+        year: minD.year(),
+        month: minD.month(),
+        date: minD.date(),
+        value: minD.format('YYYY-MM-DD'),
+      };
+    }
+  }
+  if (mxDate) {
+    const maxD = moment(mxDate, 'YYYY-MM-DD');
+    if (maxD.isValid()) {
+      maxDate = {
+        year: maxD.year(),
+        month: maxD.month(),
+        date: maxD.date(),
+        value: maxD.format('YYYY-MM-DD'),
+      };
+    }
   }
   const year = d.year();
   const month = d.month();
@@ -17,13 +41,25 @@ function createCalendarObject(date) {
   const weeks = [];
   let days = [];
   for (let dd = first; dd.isBefore(last); dd = dd.add(1, 'd')) {
-    days.push({ year: dd.year(), month: dd.month(), date: dd.date(), value: dd.format('YYYY-MM-DD') });
+    days.push({
+      year: dd.year(),
+      month: dd.month(),
+      date: dd.date(),
+      value: dd.format('YYYY-MM-DD'),
+    });
     if (days.length === 7) {
       weeks.push(days);
       days = [];
     }
   }
-  return { year, month, weeks };
+  const cal = { year, month, weeks };
+  if (minDate) {
+    cal.minDate = minDate;
+  }
+  if (maxDate) {
+    cal.maxDate = maxDate;
+  }
+  return cal;
 }
 
 function cancelEvent(e) {
@@ -31,15 +67,18 @@ function cancelEvent(e) {
   e.stopPropagation();
 }
 
-export default class Datepicker extends React.Component {
-  constructor(props) {
-    super(props);
+export default class Datepicker extends Component {
+  constructor() {
+    super();
     this.state = {};
+
+    this.onBlur = this.onBlur.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
   }
 
   componentDidMount() {
     if (this.props.autoFocus) {
-      const targetDate = this.props.selectedDate || moment().format('YYYY-MM-DD');
+      const targetDate = this.props.selectedDate || getToday();
       this.focusDate(targetDate);
     }
   }
@@ -76,6 +115,7 @@ export default class Datepicker extends React.Component {
   }
 
   onDateClick(date) {
+    console.log('onDateClick', date);
     if (this.props.onSelect) {
       this.props.onSelect(date);
     }
@@ -83,13 +123,16 @@ export default class Datepicker extends React.Component {
 
   onDateFocus(date) {
     if (this.state.targetDate !== date) {
-      this.setState({ targetDate: date });
+      setTimeout(() => {
+        console.log('onDateFocus=>', date);
+        this.setState({ targetDate: date });
+      }, 10);
     }
   }
 
-  onYearChange(item) {
+  onYearChange(e, item) {
     let targetDate = this.state.targetDate || this.props.selectedDate;
-    targetDate = moment(targetDate).year(item.value).format('YYYY-MM-DD');
+    targetDate = moment(targetDate).year(item).format('YYYY-MM-DD');
     this.setState({ targetDate });
   }
 
@@ -118,7 +161,7 @@ export default class Datepicker extends React.Component {
   }
 
   focusDate(date) {
-    const el = ReactDOM.findDOMNode(this.refs.month);
+    const el = this.month;
     const dateEl = el.querySelector(`.slds-day[data-date-value="${date}"]`);
     if (dateEl) {
       dateEl.focus();
@@ -126,7 +169,7 @@ export default class Datepicker extends React.Component {
   }
 
   isFocusedInComponent() {
-    const rootEl = ReactDOM.findDOMNode(this);
+    const rootEl = this.node;
     let targetEl = document.activeElement;
     while (targetEl && targetEl !== rootEl) {
       targetEl = targetEl.parentNode;
@@ -135,32 +178,45 @@ export default class Datepicker extends React.Component {
   }
 
   renderFilter(cal) {
+    /* eslint-disable max-len */
     return (
       <div className='slds-datepicker__filter slds-grid'>
         <div className='slds-datepicker__filter--month slds-grid slds-grid--align-spread slds-size--2-of-3'>
           <div className='slds-align-middle'>
-            <Button className='slds-align-middle' type='icon-container' icon='left' size='small' alt='Previous Month'
+            <Button
+              className='slds-align-middle'
+              type='icon-container'
+              icon='left'
+              size='small'
+              alt='Previous Month'
               onClick={ this.onMonthChange.bind(this, -1) }
             />
           </div>
           <h2 className='slds-align-middle'>{ moment.monthsShort()[cal.month] }</h2>
           <div className='slds-align-middle'>
-            <Button className='slds-align-middle' type='icon-container' icon='right' size='small' alt='Next Month'
+            <Button
+              className='slds-align-middle'
+              type='icon-container'
+              icon='right'
+              size='small'
+              alt='Next Month'
               onClick={ this.onMonthChange.bind(this, 1) }
             />
           </div>
         </div>
         <div className='slds-size--1-of-3'>
-          <Picklist className='slds-picklist--fluid slds-shrink-none' value={ cal.year }
-            onSelect={ this.onYearChange.bind(this) }
+          <Select
+            value={ cal.year }
+            onChange={ this.onYearChange.bind(this) }
           >
             {
-              new Array(11).join('_').split('_').map((a, i) => {
-                const year = cal.year + i - 5;
-                return <PicklistItem key={ year } label={ year } value={ year } />;
-              })
+              new Array(11).join('_').split('_')
+                .map((a, i) => {
+                  const year = (cal.year + i) - 5;
+                  return <Option key={ year } label={ year } value={ year } />;
+                })
             }
-          </Picklist>
+          </Select>
         </div>
       </div>
     );
@@ -168,25 +224,28 @@ export default class Datepicker extends React.Component {
 
   renderMonth(cal, selectedDate, today) {
     return (
-      <table className='datepicker__month' role='grid' aria-labelledby='month' ref='month'>
+      <table
+        className='datepicker__month'
+        role='grid'
+        aria-labelledby='month'
+        ref={node => (this.month = node)}
+      >
         <thead>
           <tr>
             {
-              moment.weekdaysMin().map((wd, i) => {
-                return (
-                  <th key={ i }>
-                    <abbr title={ moment.weekdays(i) }>{ wd }</abbr>
-                  </th>
-                );
-              })
+              moment.weekdaysMin(true).map((wd, i) => (
+                <th key={ i }>
+                  <abbr title={ moment.weekdays(true, i) }>{ wd }</abbr>
+                </th>
+              ))
             }
           </tr>
         </thead>
         <tbody>
           {
-            cal.weeks.map((days, i) => {
-              return <tr key={ i }>{ days.map(this.renderDate.bind(this, cal, selectedDate, today)) }</tr>;
-            })
+            cal.weeks.map((days, i) => (
+              <tr key={ i }>{ days.map(this.renderDate.bind(this, cal, selectedDate, today)) }</tr>
+            ))
           }
         </tbody>
       </table>
@@ -194,7 +253,20 @@ export default class Datepicker extends React.Component {
   }
 
   renderDate(cal, selectedDate, today, d, i) {
-    const enabled = d.year === cal.year && d.month === cal.month;
+    let selectable = true;
+    let enabled = d.year === cal.year && d.month === cal.month;
+    if (cal.minDate) {
+      const min = moment(d.value, 'YYYY-MM-DD')
+        .isAfter(moment(cal.minDate.value, 'YYYY-MM-DD'));
+      selectable = selectable && min;
+      enabled = enabled && min;
+    }
+    if (cal.maxDate) {
+      const max = moment(d.value, 'YYYY-MM-DD')
+        .isBefore(moment(cal.maxDate.value, 'YYYY-MM-DD'));
+      selectable = selectable && max;
+      enabled = enabled && max;
+    }
     const selected = d.value === selectedDate;
     const isToday = d.value === today;
     const dateClassName = classnames({
@@ -203,12 +275,19 @@ export default class Datepicker extends React.Component {
       'slds-is-today': isToday,
     });
     return (
-      <td className={ dateClassName } key={ i } headers={ moment.weekdays(i) }
-        role='gridcell' aria-disabled={ !enabled } aria-selected={ selected }
+      <td
+        className={ dateClassName }
+        key={ i }
+        headers={ moment.weekdays(i) }
+        role='gridcell'
+        aria-disabled={ !enabled }
+        aria-selected={ selected }
       >
-        <span className='slds-day' tabIndex={ enabled ? 0 : -1 }
-          onClick={ enabled ? this.onDateClick.bind(this, d.value) : null }
-          onKeyDown={ enabled ? this.onDateKeyDown.bind(this, d.value) : null }
+        <span
+          className='slds-day'
+          tabIndex={ selectable ? 0 : -1 }
+          onClick={ selectable ? this.onDateClick.bind(this, d.value) : null }
+          onKeyDown={ selectable ? this.onDateKeyDown.bind(this, d.value) : null }
           onFocus={ enabled ? this.onDateFocus.bind(this, d.value) : cancelEvent }
           data-date-value={ d.value }
         >{ d.date }</span>
@@ -217,17 +296,30 @@ export default class Datepicker extends React.Component {
   }
 
   render() {
-    const { className, selectedDate, ...props } = this.props;
-    const today = moment().format('YYYY-MM-DD');
+    const {
+      className, selectedDate, minDate, maxDate,
+      extensionRenderer: ExtensionRenderer,
+    } = this.props;
+    const today = getToday();
     const targetDate = this.state.targetDate || selectedDate;
-    const cal = createCalendarObject(targetDate);
+    const cal = createCalendarObject(targetDate, minDate, maxDate);
     const datepickerClassNames = classnames('slds-datepicker', className);
     return (
-      <div className={ datepickerClassNames } ref='datepicker' aria-hidden={ false }
-        onBlur={ this.onBlur.bind(this) } onKeyDown={ this.onKeyDown.bind(this) }
+      <div
+        className={ datepickerClassNames }
+        ref={node => (this.node = node)}
+        tabIndex={ -1 }
+        aria-hidden={ false }
+        onBlur={ this.onBlur }
+        onKeyDown={ this.onKeyDown }
       >
         { this.renderFilter(cal) }
         { this.renderMonth(cal, selectedDate, today) }
+        {
+          ExtensionRenderer ?
+            <ExtensionRenderer { ...this.props } /> :
+            undefined
+        }
       </div>
     );
   }
@@ -241,4 +333,7 @@ Datepicker.propTypes = {
   onSelect: PropTypes.func,
   onBlur: PropTypes.func,
   onClose: PropTypes.func,
+  minDate: PropTypes.string,
+  maxDate: PropTypes.string,
+  extensionRenderer: PropTypes.func,
 };

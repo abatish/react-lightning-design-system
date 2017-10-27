@@ -3,10 +3,11 @@ import classnames from 'classnames';
 import Icon from './Icon';
 
 class SalesPath extends React.Component {
-
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
     this.state = {};
+
+    this.onItemClick = this.onItemClick.bind(this);
   }
 
   onItemClick(itemKey) {
@@ -21,7 +22,7 @@ class SalesPath extends React.Component {
     let typeTracker = -1;
 
     return React.Children.map(paths, (path) => {
-      const { eventKey, type, onSelect, ...props } = path.props;
+      const { eventKey, type, ...props } = path.props;
       const isActive = eventKey === activeKey;
 
       typeTracker = (isActive) ? 0 :
@@ -32,12 +33,17 @@ class SalesPath extends React.Component {
         ((typeTracker === -1) ? 'complete' : 'incomplete')
       );
 
-      return (<PathItem eventKey={ eventKey } type={ evaluatedType } onSelect={ this.onItemClick.bind(this) } { ...props } />);
+      return (<PathItem
+        eventKey={ eventKey }
+        type={ evaluatedType }
+        onSelect={ this.onItemClick }
+        { ...props }
+      />);
     });
   }
 
   render() {
-    const { className, children, ...props } = this.props;
+    const { className, children } = this.props;
     const activeKey = this.props.activeKey || this.state.activeKey || this.props.defaultActiveKey;
 
     const salesPathClassNames = classnames(className, 'slds-tabs--path');
@@ -53,10 +59,11 @@ class SalesPath extends React.Component {
 
 SalesPath.propTypes = {
   className: PropTypes.string,
-  defaultActiveKey: PropTypes.any,
-  activeKey: PropTypes.any,
   onSelect: PropTypes.func,
   children: PropTypes.node,
+  /* eslint-disable react/forbid-prop-types */
+  defaultActiveKey: PropTypes.any,
+  activeKey: PropTypes.any,
 };
 
 
@@ -82,10 +89,19 @@ class PathItem extends React.Component {
 
     return (
       <li className={ pathItemClassName } role='presentation'>
-        <a className='slds-tabs--path__link' aria-selected='false' tabIndex={ tabIndex } role='tab' aria-live='assertive' onClick={ this.onItemClick.bind(this, eventKey) }>
+        <a
+          className='slds-tabs--path__link'
+          aria-selected='false'
+          tabIndex={ tabIndex }
+          role='tab'
+          aria-live='assertive'
+          onClick={ this.onItemClick.bind(this, eventKey) }
+        >
           <span className='slds-tabs--path__stage'>
             <Icon category='utility' icon='check' size='x-small' />
-            { (type === 'complete') ? (<span className='slds-assistive-text'>{ completedText }</span>) : null }
+            { (type === 'complete') ? (
+              <span className='slds-assistive-text'>{ completedText }</span>
+            ) : null }
           </span>
           <span className='slds-tabs--path__title'>{ title }</span>
         </a>

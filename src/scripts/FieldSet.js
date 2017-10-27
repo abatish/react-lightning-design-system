@@ -1,27 +1,24 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import classnames from 'classnames';
-import uuid from 'uuid';
 import FormElement from './FormElement';
+import { uuid } from './util';
 
 
-class FieldSet extends React.Component {
-  render() {
-    const { className, label, children, ...props } = this.props;
-    const fsClassNames = classnames(className, `slds-form--compound`);
-    return (
-      <fieldset className={ fsClassNames } { ...props }>
-        {
-          label ?
+const FieldSet = ({ className, label, children, ...props }) => {
+  const fsClassNames = classnames(className, 'slds-form--compound');
+  return (
+    <fieldset className={ fsClassNames } { ...props }>
+      {
+        label ?
           <legend className='slds-form-element__label'>{ label }</legend> :
           null
-        }
-        <div className='form-element__group'>
-          { children }
-        </div>
-      </fieldset>
-    );
-  }
-}
+      }
+      <div className='form-element__group'>
+        { children }
+      </div>
+    </fieldset>
+  );
+};
 
 FieldSet.propTypes = {
   className: PropTypes.string,
@@ -32,15 +29,14 @@ FieldSet.propTypes = {
 FieldSet.isFormElement = true;
 
 
-class Row extends React.Component {
+class Row extends Component {
   renderChild(totalCols, child) {
-    const klass = child.type;
-    if (!klass.isFormElement) {
-      const { id = `form-element-${uuid()}`, label, required, error, cols, children, ...props } = child.props;
-      const formElemProps = { id, label, required, error, totalCols, cols };
+    if (child && !child.type.isFormElement) {
+      const { id = `form-element-${uuid()}` } = child.props;
+      const formElemProps = { id, totalCols, cols: 1 };
       return (
         <FormElement { ...formElemProps }>
-          { React.cloneElement(child, { id, label: undefined, required: undefined, error: undefined }) }
+          { React.cloneElement(child, { id }) }
         </FormElement>
       );
     }

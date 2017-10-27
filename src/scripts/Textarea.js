@@ -1,13 +1,15 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import classnames from 'classnames';
-import uuid from 'uuid';
 import FormElement from './FormElement';
+import { uuid } from './util';
 
 
-export default class Textarea extends React.Component {
-  constructor(props) {
-    super(props);
+export default class Textarea extends Component {
+  constructor() {
+    super();
     this.state = { id: `form-element-${uuid()}` };
+
+    this.onChange = this.onChange.bind(this);
   }
 
   onChange(e) {
@@ -19,22 +21,23 @@ export default class Textarea extends React.Component {
 
   render() {
     const id = this.props.id || this.state.id;
-    const { label, required, error, ...props } = this.props;
-    if (label || required || error) {
-      const formElemProps = { id, label, required, error };
+    const { label, required, error, totalCols, cols, ...props } = this.props;
+    if (label || required || error || totalCols || cols) {
+      const formElemProps = { id, label, required, error, totalCols, cols };
       return (
         <FormElement { ...formElemProps }>
           <Textarea { ...{ ...props, id } } />
         </FormElement>
       );
     }
-    const { className, onChange, ...pprops } = props;
+    const { className, textareaRef, ...pprops } = props;
     const taClassNames = classnames(className, 'slds-input');
     return (
       <textarea
         id={ id }
+        ref={ textareaRef }
         className={ taClassNames }
-        onChange={ this.onChange.bind(this) }
+        onChange={ this.onChange }
         { ...pprops }
       />
     );
@@ -46,15 +49,11 @@ Textarea.propTypes = {
   className: PropTypes.string,
   label: PropTypes.string,
   required: PropTypes.bool,
-  error: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.string,
-    PropTypes.shape({
-      message: PropTypes.string,
-    }),
-  ]),
-  value: PropTypes.string,
-  defaultValue: PropTypes.string,
-  placeholder: PropTypes.string,
+  error: FormElement.propTypes.error,
+  totalCols: PropTypes.number,
+  cols: PropTypes.number,
   onChange: PropTypes.func,
+  textareaRef: PropTypes.func,
 };
+
+Textarea.isFormElement = true;

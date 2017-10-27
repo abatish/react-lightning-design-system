@@ -1,16 +1,28 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import classnames from 'classnames';
 import FormElement from './FormElement';
 
 
-export default class Checkbox extends React.Component {
+export default class Checkbox extends Component {
+  componentWillReceiveProps(nextProps) {
+    const input = this.node.getElementsByTagName('input')[0];
+    if (nextProps.defaultChecked !== input.checked) {
+      input.checked = nextProps.defaultChecked;
+    }
+  }
 
-  renderCheckbox({ className, label, ...props }) {
+  renderCheckbox({ className, label, checkboxRef, ...props }) {
     const checkClassNames = classnames(className, 'slds-checkbox');
     return (
-      <label className={ checkClassNames }>
+      <label
+        ref={(node) => {
+          this.node = node;
+          if (checkboxRef) checkboxRef(node);
+        }}
+        className={ checkClassNames }
+      >
         <input type='checkbox' { ...props } />
-        <span className='slds-checkbox--faux'></span>
+        <span className='slds-checkbox--faux' />
         <span className='slds-form-element__label'>{ label }</span>
       </label>
     );
@@ -21,10 +33,13 @@ export default class Checkbox extends React.Component {
     const formElemProps = { required, error, totalCols, cols };
     return (
       grouped ?
-      this.renderCheckbox(props) :
-      <FormElement { ...formElemProps }>
-        { this.renderCheckbox(props) }
-      </FormElement>
+        this.renderCheckbox(props) :
+          <FormElement
+            formElementRef={node => (this.node = node)}
+            { ...formElemProps }
+          >
+            { this.renderCheckbox(props) }
+          </FormElement>
     );
   }
 
@@ -34,18 +49,16 @@ Checkbox.propTypes = {
   className: PropTypes.string,
   label: PropTypes.string,
   required: PropTypes.bool,
-  error: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.string,
-    PropTypes.shape({
-      message: PropTypes.string,
-    }),
-  ]),
+  error: FormElement.propTypes.error,
   totalCols: PropTypes.number,
   cols: PropTypes.number,
-  name: PropTypes.string,
-  value: PropTypes.any,
   grouped: PropTypes.bool,
+  checkboxRef: PropTypes.func,
+  name: PropTypes.string,
+  value: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
   checked: PropTypes.bool,
   defaultChecked: PropTypes.bool,
 };

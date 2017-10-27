@@ -3,7 +3,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { setSymbolsFilePath } from '../src/scripts/util';
 
-import Icon from 'Icon';
+import Icon from '../src/scripts/Icon';
 
 describe('Icon', () => {
   it('should render icon', () => {

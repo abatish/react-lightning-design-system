@@ -1,8 +1,14 @@
 import React, { PropTypes } from 'react';
 import classnames from 'classnames';
-
+import FormElement from './FormElement';
 
 export default class RadioGroup extends React.Component {
+  constructor() {
+    super();
+
+    this.renderControl = this.renderControl.bind(this);
+  }
+
   onControlChange(value, e) {
     if (this.props.onChange) {
       this.props.onChange(e, value);
@@ -12,13 +18,18 @@ export default class RadioGroup extends React.Component {
   renderControl(radio) {
     return (
       this.props.name ?
-      React.cloneElement(radio, { name: this.props.name, onChange: this.onControlChange.bind(this, radio.props.value) }) :
-      radio
+        React.cloneElement(radio, {
+          name: this.props.name,
+          onChange: this.onControlChange.bind(this, radio.props.value),
+        }) :
+        radio
     );
   }
 
   render() {
-    const { className, label, required, error, totalCols, cols, style, onChange, children, ...props } = this.props;
+    const {
+      className, label, required, error, totalCols, cols, style, children, ...props
+    } = this.props;
     const grpClassNames = classnames(
       className,
       'slds-form-element',
@@ -35,22 +46,24 @@ export default class RadioGroup extends React.Component {
        typeof error === 'object' ? error.message :
        undefined) :
       undefined;
+
+    delete props.onChange;
     return (
       <fieldset className={ grpClassNames } style={ grpStyles } { ...props } >
         <legend className='slds-form-element__label slds-form-element__label--top'>
           { label }
           {
             required ?
-            <abbr className='slds-required'>*</abbr> :
-            undefined
+              <abbr className='slds-required'>*</abbr> :
+              undefined
           }
         </legend>
         <div className='slds-form-element__control'>
-          { React.Children.map(children, this.renderControl.bind(this)) }
+          { React.Children.map(children, this.renderControl) }
           {
             errorMessage ?
-            <div className='slds-form-element__help'>{ errorMessage }</div> :
-            undefined
+              <div className='slds-form-element__help'>{ errorMessage }</div> :
+              undefined
           }
         </div>
       </fieldset>
@@ -63,19 +76,14 @@ RadioGroup.propTypes = {
   className: PropTypes.string,
   label: PropTypes.string,
   required: PropTypes.bool,
-  error: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.string,
-    PropTypes.shape({
-      message: PropTypes.string,
-    }),
-  ]),
+  error: FormElement.propTypes.error,
   name: PropTypes.string,
   onChange: PropTypes.func,
   totalCols: PropTypes.number,
   cols: PropTypes.number,
-  style: PropTypes.object,
   children: PropTypes.node,
+  /* eslint-disable react/forbid-prop-types */
+  style: PropTypes.object,
 };
 
 RadioGroup.isFormElement = true;

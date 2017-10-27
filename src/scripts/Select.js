@@ -1,12 +1,12 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import classnames from 'classnames';
-import uuid from 'uuid';
 import FormElement from './FormElement';
+import { uuid } from './util';
 
 
-export default class Select extends React.Component {
-  constructor(props) {
-    super(props);
+export default class Select extends Component {
+  constructor() {
+    super();
     this.state = { id: `form-element-${uuid()}` };
   }
 
@@ -19,16 +19,17 @@ export default class Select extends React.Component {
 
   render() {
     const id = this.props.id || this.state.id;
-    const { label, required, error, ...props } = this.props;
-    if (label || required || error) {
-      const formElemProps = { id, label, required, error };
+    const { label, required, error, totalCols, cols, ...props } = this.props;
+    if (label || required || error || totalCols || cols) {
+      const formElemProps = { id, label, required, error, totalCols, cols };
       return (
         <FormElement { ...formElemProps }>
           <Select { ...{ ...props, id } } />
         </FormElement>
       );
     }
-    const { className, children, onChange, ...pprops } = props;
+    const { className, children, ...pprops } = props;
+    delete pprops.onChange;
     const selectClassNames = classnames(className, 'slds-select');
     return (
       <select
@@ -49,21 +50,23 @@ Select.propTypes = {
   className: PropTypes.string,
   label: PropTypes.string,
   required: PropTypes.bool,
-  error: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.string,
-    PropTypes.shape({
-      message: PropTypes.string,
-    }),
-  ]),
-  value: PropTypes.any,
-  defaultValue: PropTypes.any,
-  placeholder: PropTypes.string,
+  totalCols: PropTypes.number,
+  cols: PropTypes.number,
+  error: FormElement.propTypes.error,
   onChange: PropTypes.func,
 };
 
-export class Option extends React.Component {
-  render() {
-    return <option { ...this.props } />;
-  }
-}
+Select.isFormElement = true;
+
+export const Option = (props) => {
+  const { label, children, ...pprops } = props;
+  return (<option { ...pprops }>{ label || children }</option>);
+};
+
+Option.propTypes = {
+  children: PropTypes.node,
+  label: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+  ]),
+};

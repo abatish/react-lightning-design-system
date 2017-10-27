@@ -1,18 +1,21 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 import classnames from 'classnames';
-import uuid from 'uuid';
 import FormElement from './FormElement';
+import { uuid } from './util';
 
+export default class Form extends Component {
+  constructor() {
+    super();
 
-export default class Form extends React.Component {
+    this.renderFormElement = this.renderFormElement.bind(this);
+  }
   renderFormElement(element) {
-    const klass = element.type;
-    if (!klass.isFormElement) {
-      const { id = `form-element-${uuid()}`, label, required, error, totalCols, cols, children, ...props } = element.props;
-      const formElemProps = { id, label, required, error, totalCols, cols };
+    if (element && !element.type.isFormElement) {
+      const { id = `form-element-${uuid()}` } = element.props;
+      const formElemProps = { id };
       return (
         <FormElement { ...formElemProps }>
-          { React.cloneElement(element, { id, label: undefined, required: undefined, error: undefined }) }
+          { React.cloneElement(element, { id }) }
         </FormElement>
       );
     }
@@ -24,7 +27,7 @@ export default class Form extends React.Component {
     const formClassNames = classnames(className, `slds-form--${type}`);
     return (
       <form className={ formClassNames } { ...props }>
-        { React.Children.map(children, this.renderFormElement.bind(this)) }
+        { React.Children.map(children, this.renderFormElement) }
       </form>
     );
   }
