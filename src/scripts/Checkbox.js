@@ -4,10 +4,27 @@ import FormElement from './FormElement';
 
 
 export default class Checkbox extends Component {
+  constructor() {
+    super();
+    this.onChange = this.onChange.bind(this);
+  }
+
   componentWillReceiveProps(nextProps) {
     const input = this.node.getElementsByTagName('input')[0];
     if (nextProps.defaultChecked !== input.checked) {
       input.checked = nextProps.defaultChecked;
+    }
+  }
+
+  onChange(e) {
+    if (!this.props.disabled) {
+      if (this.props.checked) {
+        this.props.checked = false;
+        this.props.value = '';
+      } else {
+        this.props.checked = true;
+        this.props.value = 'True';
+      }
     }
   }
 
@@ -31,6 +48,9 @@ export default class Checkbox extends Component {
   render() {
     const { grouped, required, error, totalCols, cols, ...props } = this.props;
     const formElemProps = { required, error, totalCols, cols };
+    if (typeof props.onChange === 'undefined') {
+      props.onChange = this.onChange;
+    }
     return (
       grouped ?
         this.renderCheckbox(props) :
@@ -60,5 +80,6 @@ Checkbox.propTypes = {
     PropTypes.number,
   ]),
   checked: PropTypes.bool,
-  defaultChecked: PropTypes.bool,
+  disabled: PropTypes.bool,
+  defaultChecked: PropTypes.bool
 };
