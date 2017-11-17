@@ -1,7 +1,6 @@
 import assert from 'power-assert';
 import React from 'react';
 import { shallow } from 'enzyme';
-import { setSymbolsFilePath } from '../src/scripts/util';
 
 import Icon from '../src/scripts/Icon';
 
@@ -32,16 +31,5 @@ describe('Icon', () => {
     const categoryIcon = `${category}:${icon}`;
     const wrapper = shallow(<Icon icon={ categoryIcon } />);
     assert(wrapper.html().indexOf(`/assets/icons/${category}-sprite/svg/symbols.svg#${icon}`) > 0);
-  });
-
-  it('should render the icon using a preset symbols path for a given type', () => {
-    const category = 'action';
-    const icon = 'do_something';
-    const categoryIcon = `${category}:${icon}`;
-
-    setSymbolsFilePath({ action: '/this/is/not/a/real/path.svg' });
-
-    const wrapper = shallow(<Icon icon={ categoryIcon } />);
-    assert(wrapper.html().indexOf(`/this/is/not/a/real/path.svg#${icon}`) > 0);
   });
 });
