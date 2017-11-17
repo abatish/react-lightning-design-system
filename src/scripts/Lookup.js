@@ -475,6 +475,12 @@ export default class Lookup extends Component {
     }
   }
 
+  onSearchInputClick() {
+    if (this.props.data && this.props.data.length) {
+      this.setState({ opened: true });
+    }
+  }
+
   onScopeChange(targetScope) {
     this.setState({ targetScope });
     if (this.props.onScopeChange) {
@@ -484,6 +490,7 @@ export default class Lookup extends Component {
 
   onSearchTextChange(searchText) {
     this.setState({ searchText });
+    this.setState({ opened: true });
     if (this.props.onSearchTextChange) {
       this.props.onSearchTextChange(searchText);
     }
@@ -641,6 +648,7 @@ export default class Lookup extends Component {
                   onPressDown={ this.onFocusFirstCandidate.bind(this) }
                   onComplete={ onComplete }
                   onBlur={ this.onBlur.bind(this) }
+                  onClick={this.onSearchInputClick.bind(this)}
                 />
           }
         </div>
