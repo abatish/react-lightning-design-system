@@ -62,6 +62,7 @@ class Pill extends Component {
           type='icon-bare'
           icon='close'
           alt='Remove'
+          title='Remove'
           tabIndex={ -1 }
           onClick={ this.onPillRemove.bind(this) }
         />
