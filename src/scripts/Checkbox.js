@@ -21,10 +21,10 @@ export default class Checkbox extends Component {
     if (!this.props.disabled) {
       if (this.props.checked) {
         this.props.checked = false;
-        this.props.value = '';
+        this.props.value = 'false';
       } else {
         this.props.checked = true;
-        this.props.value = 'True';
+        this.props.value = 'true';
       }
     }
   }
