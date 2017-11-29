@@ -20,6 +20,7 @@ export default class DateInput extends Component {
     this.onInputKeyDown = this.onInputKeyDown.bind(this);
     this.onInputChange = this.onInputChange.bind(this);
     this.onInputBlur = this.onInputBlur.bind(this);
+    this.onInputClick = this.onInputClick.bind(this);
 
     this.onDatepickerSelect = this.onDatepickerSelect.bind(this);
     this.onDatepickerBlur = this.onDatepickerBlur.bind(this);
@@ -84,6 +85,18 @@ export default class DateInput extends Component {
           this.props.onComplete();
         }
       }
+    }, 10);
+
+    setTimeout(() => {
+      if(this.state.opened === true){
+        this.setState({ opened: false });
+      }
+    }, 100);
+  }
+
+  onInputClick(e){
+    setTimeout(() => {
+      this.showDatepicker(false);
     }, 10);
   }
 
@@ -155,7 +168,7 @@ export default class DateInput extends Component {
     return isElInChildren(rootEl, targetEl);
   }
 
-  showDatepicker() {
+  showDatepicker(autoFocus) {
     let value = this.state.value;
     if (typeof this.state.inputValue !== 'undefined') {
       value = moment(this.state.inputValue, this.getInputValueFormat());
@@ -165,7 +178,7 @@ export default class DateInput extends Component {
         value = this.state.value;
       }
     }
-    this.setState({ opened: true, value });
+    this.setState({ opened: true, value, autoFocus});
   }
 
   renderInput({ inputValue, ...props }) {
@@ -180,6 +193,7 @@ export default class DateInput extends Component {
           onKeyDown={ this.onInputKeyDown }
           onChange={ this.onInputChange }
           onBlur={ this.onInputBlur }
+          onClick={ props.disabled ? undefined : this.onInputClick }
         />
         <span
           tabIndex={ -1 }
@@ -192,7 +206,7 @@ export default class DateInput extends Component {
     );
   }
 
-  renderDropdown(dateValue, minDate, maxDate, extensionRenderer) {
+  renderDropdown(dateValue, minDate, maxDate, extensionRenderer, autoFocus) {
     const datepickerClassNames = classnames(
       'slds-dropdown',
       `slds-dropdown--${this.props.menuAlign}`
@@ -202,7 +216,7 @@ export default class DateInput extends Component {
         <Datepicker
           className={ datepickerClassNames }
           selectedDate={ dateValue }
-          autoFocus
+          autoFocus= { autoFocus }
           minDate={minDate}
           maxDate={maxDate}
           extensionRenderer={ extensionRenderer }
@@ -233,11 +247,14 @@ export default class DateInput extends Component {
       typeof dateValue !== 'undefined' && mvalue.isValid() ?
         mvalue.format(this.getInputValueFormat()) :
           undefined;
+    const autoFocus = this.state.autoFocus === false ?
+      this.state.autoFocus : true;
     const dropdown = this.renderDropdown(
       mvalue.isValid() ? mvalue.format('YYYY-MM-DD') : undefined,
       minDate,
       maxDate,
       extensionRenderer,
+      autoFocus
     );
     const formElemProps = { id, totalCols, cols, label, required, error, dropdown };
     delete props.dateFormat;
