@@ -30,13 +30,18 @@ export default class Picklist extends Component {
 
   onPicklistItemClick = (item, e) => {
     const { multiSelect } = this.props;
-    this.updateItemValue(item.value);
 
+    let finalItem = { value:'' };
+    if(item.selected === false){
+      finalItem = item;
+    }
+    
+    this.updateItemValue(finalItem.value);
     if (this.props.onChange) {
-      this.props.onChange(e, item.value);
+      this.props.onChange(e, finalItem.value);
     }
     if (this.props.onSelect) {
-      this.props.onSelect(item);
+      this.props.onSelect(finalItem);
     }
     if (!multiSelect) {  // close if only single select
       setTimeout(() => {
