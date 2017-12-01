@@ -85,19 +85,16 @@ export default class DateInput extends Component {
           this.props.onComplete();
         }
       }
-    }, 10);
-
-    setTimeout(() => {
+      
       if(this.state.opened === true){
         this.setState({ opened: false });
       }
-    }, 100);
+    }, 10);
+
   }
 
   onInputClick(e){
-    setTimeout(() => {
-      this.showDatepicker(false);
-    }, 10);
+    this.showDatepicker(false);
   }
 
   onDatepickerSelect(dvalue) {
