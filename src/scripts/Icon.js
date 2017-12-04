@@ -188,7 +188,7 @@ export default class Icon extends Component {
         iconColor ? `slds-icon-${iconColor}` : null
       );
       return (
-        <span className={ ccontainerClassName } ref={ node => (this.iconContainer = node) }>
+        <span title={ title } className={ ccontainerClassName } ref={ node => (this.iconContainer = node) }>
           { this.renderSVG({ category, icon, fillColor: iconColor, container, ...pprops }) }
         </span>
       );
@@ -211,6 +211,7 @@ Icon.propTypes = {
   color: PropTypes.string,
   textColor: PropTypes.oneOf(['default', 'warning', 'error']),
   tabIndex: PropTypes.number,
+  title: PropTypes.string,
   fillColor: PropTypes.string,
 };
 
