@@ -243,7 +243,7 @@ export default class DateInput extends Component {
         this.state.inputValue :
       typeof dateValue !== 'undefined' && mvalue.isValid() ?
         mvalue.format(this.getInputValueFormat()) :
-          undefined;
+          '';
     const autoFocus = this.state.autoFocus === false ?
       this.state.autoFocus : true;
     const dropdown = this.renderDropdown(
