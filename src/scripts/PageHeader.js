@@ -112,12 +112,14 @@ export class PageHeaderHeading extends Component {
     ) : content;
   }
   renderContent() {
-    const { rightActions, info, legend, title, breadCrumbs, leftActions } = this.props;
+    const { rightActions, unsafe, info, legend, title, breadCrumbs, leftActions } = this.props;
     const infoPart = (info && !breadCrumbs && !legend && !rightActions) ?
       this.renderInfo(info) : null;
-    const titlePart = typeof title === 'string' ? (
+    const titlePart = typeof title === 'string' ?  (unsafe) ? (
       <PageHeaderHeadingTitle className='slds-m-right--small' dangerouslySetInnerHTML={{ __html: title }} />
-    ) : title;
+    ) :
+    ( <PageHeaderHeadingTitle className='slds-m-right--small'>{title}</PageHeaderHeadingTitle> )
+    : title;
 
     let breadCrumbsPart = null;
     if (breadCrumbs) {
@@ -192,6 +194,7 @@ PageHeaderHeading.propTypes = {
     PropTypes.arrayOf(Crumb),
     PropTypes.node,
   ]),
+  unsafe: PropTypes.bool,
   leftActions: PropTypes.node,
   figure: PropTypes.node,
   rightActions: PropTypes.node,
