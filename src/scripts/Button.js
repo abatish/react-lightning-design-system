@@ -31,7 +31,7 @@ export default class Button extends Component {
 
   render() {
     const {
-      className, type, size, icon, iconAlign, iconMore, selected, alt, label, loading,
+      className, type, title, size, icon, iconAlign, iconMore, selected, alt, label, loading,
       iconSize, inverse, htmlType = 'button', children, buttonRef, ...props
     } = this.props;
     delete props.inverse;
@@ -56,6 +56,7 @@ export default class Button extends Component {
           this.node = node;
           if (buttonRef) buttonRef(node);
         }}
+        title={ title }
         className={ btnClassNames }
         type={ htmlType }
         { ...props }
@@ -95,6 +96,7 @@ Button.propTypes = {
   className: PropTypes.string,
   label: PropTypes.node,
   alt: PropTypes.string,
+  title: PropTypes.string,
   type: PropTypes.oneOf(BUTTON_TYPES),
   size: PropTypes.oneOf(BUTTON_SIZES),
   htmlType: PropTypes.string,
@@ -112,7 +114,7 @@ Button.propTypes = {
 };
 
 
-export const ButtonIcon = ({ icon, align, size, inverse, className, style, ...props }) => {
+export const ButtonIcon = ({ icon, title, align, size, inverse, className, style, ...props }) => {
   const alignClassName = ICON_ALIGNS.indexOf(align) >= 0 ? `slds-button__icon--${align}` : null;
   const sizeClassName = ICON_SIZES.indexOf(size) >= 0 ? `slds-button__icon--${size}` : null;
   const inverseClassName = inverse ? 'slds-button__icon--inverse' : null;
@@ -121,7 +123,7 @@ export const ButtonIcon = ({ icon, align, size, inverse, className, style, ...pr
   const iconStyle = { ...style, pointerEvents: 'none' };
   return (
     <Icon
-      className={ iconClassNames } icon={ icon } textColor={ null } style={ iconStyle }
+      className={ iconClassNames } icon={ icon } textColor={ null } style={ iconStyle } title={ title }
       { ...props }
     />
   );
