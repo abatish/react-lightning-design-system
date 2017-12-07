@@ -32,7 +32,7 @@ export default class Picklist extends Component {
     const { multiSelect } = this.props;
 
     let finalItem = { value:'' };
-    if(item.selected === false){
+    if(item.selected === false || multiSelect){
       finalItem = item;
     }
     
