@@ -60,9 +60,10 @@ export default class DateInput extends Component {
       this.showDatepicker();
       e.preventDefault();
       e.stopPropagation();
-    }else if(e.keyCode == 9){
+    } else if (e.keyCode === 9) {
       this.setState({ opened: false });
     }
+
     if (this.props.onKeyDown) {
       this.props.onKeyDown(e);
     }
@@ -77,7 +78,7 @@ export default class DateInput extends Component {
   }
 
   onInputBlur(e) {
-    if(this.state.inputValue){
+    if (this.state.inputValue) {
       this.setValueFromInput(e.target.value);
     }
 
@@ -89,15 +90,14 @@ export default class DateInput extends Component {
         if (this.props.onComplete) {
           this.props.onComplete();
         }
-        if(this.state.opened === true){
+        if (this.state.opened) {
           this.setState({ opened: false });
         }
       }
     }, 10);
-
   }
 
-  onInputClick(e){
+  onInputClick() {
     this.showDatepicker(false);
   }
 
@@ -179,7 +179,7 @@ export default class DateInput extends Component {
         value = this.state.value;
       }
     }
-    this.setState({ opened: true, value, autoFocus});
+    this.setState({ opened: true, value, autoFocus });
   }
 
   renderInput({ inputValue, ...props }) {
@@ -217,7 +217,7 @@ export default class DateInput extends Component {
         <Datepicker
           className={ datepickerClassNames }
           selectedDate={ dateValue }
-          autoFocus= { autoFocus }
+          autoFocus={ autoFocus }
           minDate={minDate}
           maxDate={maxDate}
           extensionRenderer={ extensionRenderer }

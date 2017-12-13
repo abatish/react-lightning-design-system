@@ -123,7 +123,11 @@ export const ButtonIcon = ({ icon, title, align, size, inverse, className, style
   const iconStyle = { ...style, pointerEvents: 'none' };
   return (
     <Icon
-      className={ iconClassNames } icon={ icon } textColor={ null } style={ iconStyle } title={ title }
+      className={ iconClassNames }
+      icon={ icon }
+      textColor={ null }
+      style={ iconStyle }
+      title={ title }
       { ...props }
     />
   );
@@ -135,5 +139,6 @@ ButtonIcon.propTypes = {
   align: PropTypes.oneOf(['left', 'right']),
   size: PropTypes.oneOf(['x-small', 'small', 'medium', 'large']),
   inverse: PropTypes.bool,
-  style: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  style: PropTypes.object, // eslint-disable-line react/forbid-prop-types,
+  title: PropTypes.string,
 };
