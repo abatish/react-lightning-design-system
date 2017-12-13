@@ -17,7 +17,7 @@ export default class Checkbox extends Component {
     }
   }
 
-  onChange(e) {
+  onChange() {
     if (!this.props.disabled) {
       if (this.props.checked) {
         this.props.checked = false;
@@ -82,5 +82,5 @@ Checkbox.propTypes = {
   ]),
   checked: PropTypes.bool,
   disabled: PropTypes.bool,
-  defaultChecked: PropTypes.bool
+  defaultChecked: PropTypes.bool,
 };

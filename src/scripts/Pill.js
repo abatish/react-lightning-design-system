@@ -36,7 +36,7 @@ class Pill extends Component {
       { 'slds-truncate': truncate },
       className
     );
-    
+
     return (
       <Tag
         ref={ (node) => {

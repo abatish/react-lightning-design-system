@@ -115,10 +115,10 @@ export class PageHeaderHeading extends Component {
     const { rightActions, unsafe, info, legend, title, breadCrumbs, leftActions } = this.props;
     const infoPart = (info && !breadCrumbs && !legend && !rightActions) ?
       this.renderInfo(info) : null;
-    const titlePart = typeof title === 'string' ?  (unsafe) ? (
+    const titlePart = typeof title === 'string' ? (unsafe) ? (
       <PageHeaderHeadingTitle className='slds-m-right--small' dangerouslySetInnerHTML={{ __html: title }} />
     ) :
-    ( <PageHeaderHeadingTitle className='slds-m-right--small'>{title}</PageHeaderHeadingTitle> )
+    (<PageHeaderHeadingTitle className='slds-m-right--small'>{title}</PageHeaderHeadingTitle>)
     : title;
 
     let breadCrumbsPart = null;

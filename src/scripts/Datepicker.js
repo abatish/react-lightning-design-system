@@ -116,7 +116,6 @@ export default class Datepicker extends Component {
   }
 
   onDateClick(date) {
-    console.log('onDateClick', date);
     if (this.props.onSelect) {
       this.props.onSelect(date);
     }
@@ -125,7 +124,6 @@ export default class Datepicker extends Component {
   onDateFocus(date) {
     if (this.state.targetDate !== date) {
       setTimeout(() => {
-        console.log('onDateFocus=>', date);
         this.setState({ targetDate: date });
       }, 10);
     }

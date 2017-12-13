@@ -31,11 +31,11 @@ export default class Picklist extends Component {
   onPicklistItemClick = (item, e) => {
     const { multiSelect } = this.props;
 
-    let finalItem = { value:'' };
-    if(item.selected === false || multiSelect){
+    let finalItem = { value: '' };
+    if (item.selected === false || multiSelect) {
       finalItem = item;
     }
-    
+
     this.updateItemValue(finalItem.value);
     if (this.props.onChange) {
       this.props.onChange(e, finalItem.value);

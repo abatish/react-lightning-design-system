@@ -172,7 +172,7 @@ export default class Icon extends Component {
   }
 
   render() {
-    const { container, ...props } = this.props;
+    const { container, title, ...props } = this.props;
     let { category, icon } = props;
 
     if (icon.indexOf(':') > 0) {
