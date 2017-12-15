@@ -187,11 +187,20 @@ export default class Icon extends Component {
         container === 'circle' ? 'slds-icon__container--circle' : null,
         iconColor ? `slds-icon-${iconColor}` : null
       );
-      return (
-        <span title={ title } className={ ccontainerClassName } ref={ node => (this.iconContainer = node) }>
-          { this.renderSVG({ category, icon, fillColor: iconColor, container, ...pprops }) }
-        </span>
-      );
+      if (typeof title !== 'undefined') {
+        return (
+          <span title={ title } className={ ccontainerClassName } ref={ node => (this.iconContainer = node) }>
+            { this.renderSVG({ category, icon, fillColor: iconColor, container, ...pprops }) }
+          </span>
+        );
+      } else {
+        return (
+          <span className={ ccontainerClassName } ref={ node => (this.iconContainer = node) }>
+            { this.renderSVG({ category, icon, fillColor: iconColor, container, ...pprops }) }
+          </span>
+        );
+      }
+      
     }
 
     return this.renderSVG({ ...props, category, icon });
