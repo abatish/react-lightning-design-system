@@ -32,7 +32,7 @@ export default class Textarea extends Component {
       );
     }
     const { className, textareaRef, ...pprops } = props;
-    const taClassNames = classnames(className, 'slds-input');
+    const taClassNames = classnames(className, 'slds-textarea');
     return (
       <textarea
         id={ id }
