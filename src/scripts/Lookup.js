@@ -404,6 +404,7 @@ export class LookupCandidateList extends Component {
       'slds-lookup__menu',
       { 'slds-hide': hidden, 'slds-show': !hidden }
     );
+
     return (
       <div
         ref={ node => (this.node = node) }
@@ -597,7 +598,7 @@ export default class Lookup extends Component {
         ref={ node => (this.candidateList = node) }
         data={ data }
         focus={ this.state.focusFirstCandidate }
-        hidden={ !opened }
+        hidden={ !opened || (!loading && data.length === 0) }
         loading={ loading }
         filter={ lookupFilter ? entry => lookupFilter(entry, searchText, targetScope) : undefined }
         header={ listHeader }
@@ -606,6 +607,7 @@ export default class Lookup extends Component {
         onBlur={ this.onBlur.bind(this) }
       />
     );
+
     const lookupClassNames = classnames(
       'slds-lookup',
       { 'slds-has-selection': selected },
