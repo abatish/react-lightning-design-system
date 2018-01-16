@@ -2,13 +2,27 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import FormElement from './FormElement';
-
+import DOMpurify from 'dompurify';
 
 export default class Checkbox extends Component {
   constructor() {
     super();
     this.onChange = this.onChange.bind(this);
   }
+
+  componentDidMount(){
+    DOMpurify.addHook('afterSanitizeAttributes', function(node) {
+      // set all elements owning target to target=_blank as dompurify removes it
+      if ('target' in node) {
+          node.setAttribute('target','_blank');
+      }
+    });
+  }
+
+  componentWillUnmount(){
+    DOMpurify.removeHook('afterSanitizeAttributes');
+  }
+
 
   componentWillReceiveProps(nextProps) {
     const input = this.node.getElementsByTagName('input')[0];
@@ -41,7 +55,7 @@ export default class Checkbox extends Component {
       >
         <input type='checkbox' { ...props } />
         <span className='slds-checkbox--faux' />
-        <span className='slds-form-element__label'>{ label }</span>
+        <span className='slds-form-element__label' dangerouslySetInnerHTML={{__html: DOMpurify.sanitize(label)}}></span>
       </label>
     );
   }
