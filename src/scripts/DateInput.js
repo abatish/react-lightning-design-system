@@ -141,7 +141,7 @@ export default class DateInput extends Component {
   }
 
   getValueFormat() {
-    return this.props.includeTime ? 'YYYY-MM-DDTHH:mm:ss.SSSZ' : 'YYYY-MM-DD';
+    return this.props.includeTime ? `${this.props.dateFormat ? this.props.dateFormat : 'YYY-MM-DD'}THH:mm:ss.SSSZ` : (this.props.dateFormat ? this.props.dateFormat : 'YYY-MM-DD');
   }
 
   getInputValueFormat() {
