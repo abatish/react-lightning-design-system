@@ -18,6 +18,7 @@ storiesOf('Picklist', module)
       onChange={ action('change') }
       onValueChange={ action('valueChange') }
       onBlur={ action('blur') }
+      onToggle={ action('onToggle') }
     >
       <PicklistItem label='Picklist Item One' value='1' disabled={ boolean('disabled #1') } />
       <PicklistItem label='Picklist Item Two' value='2' disabled={ boolean('disabled #2') } />
@@ -31,6 +32,7 @@ storiesOf('Picklist', module)
       onChange={ action('change') }
       onValueChange={ action('valueChange') }
       onSelect={ action('select') }
+      onToggle={ action('onToggle') }
     >
       <PicklistItem label='Picklist Item One' value='1' />
       <PicklistItem label='Picklist Item Two' value='2' />
@@ -44,6 +46,7 @@ storiesOf('Picklist', module)
       onChange={ action('change') }
       onValueChange={ action('valueChange') }
       onSelect={ action('select') }
+      onToggle={ action('onToggle') }
     >
       <PicklistItem label='Picklist Item One' value='1' />
       <PicklistItem label='Picklist Item Two' value='2' />
@@ -58,6 +61,7 @@ storiesOf('Picklist', module)
       onChange={ action('change') }
       onValueChange={ action('valueChange') }
       onSelect={ action('select') }
+      onToggle={ action('onToggle') }
     >
       <PicklistItem label='Picklist Item One' value='1' />
       <PicklistItem label='Picklist Item Two' value='2' />
@@ -70,6 +74,7 @@ storiesOf('Picklist', module)
       onChange={ action('change') }
       onValueChange={ action('valueChange') }
       onSelect={ action('select') }
+      onToggle={ action('onToggle') }
     >
       <PicklistItem label='Picklist Item One' value='1' disabled />
       <PicklistItem label='Picklist Item Two' value='2' disabled />
@@ -83,6 +88,7 @@ storiesOf('Picklist', module)
       onChange={ action('change') }
       onValueChange={ action('valueChange') }
       onSelect={ action('select') }
+      onToggle={ action('onToggle') }
     >
       <PicklistItem label='Picklist Item One' value='1' />
       <PicklistItem label='Picklist Item Two' value='2' />
@@ -98,6 +104,7 @@ storiesOf('Picklist', module)
       onChange={ action('change') }
       onValueChange={ action('valueChange') }
       onSelect={ action('select') }
+      onToggle={ action('onToggle') }
     >
       <PicklistItem label='Picklist Item One' value='1' />
       <PicklistItem label='Picklist Item Two' value='2' />
@@ -116,6 +123,7 @@ storiesOf('Picklist', module)
         onComplete={ action('complete') }
         menuSize='small'
         menuStyle={ { maxHeight: '20rem', overflowY: 'auto' } }
+        onToggle={ action('onToggle') }
       >
         {
           Array.from(Array(20)).map((_, i) => (
