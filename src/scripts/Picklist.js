@@ -149,7 +149,7 @@ export default class Picklist extends Component {
     }
 
     // one item
-    if (selectedValues.length === 1) {
+    if (selectedValues.length === 1 && selectedValues[0]) {
       const selectedValue = selectedValues[0];
       let selected = null;
       React.Children.forEach(this.props.children, (item) => {
