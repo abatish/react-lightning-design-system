@@ -78,9 +78,7 @@ export default class DateInput extends Component {
   }
 
   onInputBlur(e) {
-    if (this.state.inputValue) {
       this.setValueFromInput(e.target.value);
-    }
 
     setTimeout(() => {
       if (!this.isFocusedInComponent()) {
@@ -150,17 +148,19 @@ export default class DateInput extends Component {
 
   setValueFromInput(inputValue) {
     let value = this.state.value;
-    if (!inputValue) {
-      value = '';
-    } else {
-      value = moment(inputValue, this.getInputValueFormat());
-      if (value.isValid()) {
-        value = value.format(this.getValueFormat());
-      } else {
+    if(value !== inputValue){
+      if (!inputValue) {
         value = '';
+      } else {
+        value = moment(inputValue, this.getInputValueFormat());
+        if (value.isValid()) {
+          value = value.format(this.getValueFormat());
+        } else {
+          value = '';
+        }
       }
+      this.setState({ value, inputValue: undefined });
     }
-    this.setState({ value, inputValue: undefined });
   }
 
   isFocusedInComponent() {
