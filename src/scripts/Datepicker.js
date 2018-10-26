@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import moment from 'moment';
 import Button from './Button';
 import Select, { Option } from './Select';
-import { getToday } from './util';
+import { getToday, isElInChildren } from './util';
 
 function createCalendarObject(date, mnDate, mxDate) {
   let minDate;
@@ -80,7 +80,9 @@ export default class Datepicker extends Component {
   componentDidMount() {
     if (this.props.autoFocus) {
       const targetDate = this.props.selectedDate || getToday();
-      this.focusDate(targetDate);
+      setTimeout(() => {
+        this.focusDate(targetDate);
+      }, 10);
     }
   }
 
@@ -161,6 +163,7 @@ export default class Datepicker extends Component {
 
   focusDate(date) {
     const el = this.month;
+    if (!el) { return; }
     const dateEl = el.querySelector(`.slds-day[data-date-value="${date}"]`);
     if (dateEl) {
       dateEl.focus();
@@ -168,12 +171,7 @@ export default class Datepicker extends Component {
   }
 
   isFocusedInComponent() {
-    const rootEl = this.node;
-    let targetEl = document.activeElement;
-    while (targetEl && targetEl !== rootEl) {
-      targetEl = targetEl.parentNode;
-    }
-    return !!targetEl;
+    return isElInChildren(this.node, document.activeElement);
   }
 
   renderFilter(cal) {
@@ -297,16 +295,21 @@ export default class Datepicker extends Component {
   render() {
     const {
       className, selectedDate, minDate, maxDate,
+      elementRef,
       extensionRenderer: ExtensionRenderer,
     } = this.props;
     const today = getToday();
     const targetDate = this.state.targetDate || selectedDate;
     const cal = createCalendarObject(targetDate, minDate, maxDate);
     const datepickerClassNames = classnames('slds-datepicker', className);
+    const handleDOMRef = (node) => {
+      this.node = node;
+      if (elementRef) { elementRef(node); }
+    };
     return (
       <div
         className={ datepickerClassNames }
-        ref={node => (this.node = node)}
+        ref={ handleDOMRef }
         tabIndex={ -1 }
         aria-hidden={ false }
         onBlur={ this.onBlur }
@@ -329,6 +332,10 @@ Datepicker.propTypes = {
   className: PropTypes.string,
   selectedDate: PropTypes.string,
   autoFocus: PropTypes.bool,
+  minDate: PropTypes.string,
+  maxDate: PropTypes.string,
+  extensionRenderer: PropTypes.func,
+  elementRef: PropTypes.func,
   onSelect: PropTypes.func,
   onBlur: PropTypes.func,
   onClose: PropTypes.func,

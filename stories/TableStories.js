@@ -1,6 +1,7 @@
 import React from 'react';
-import { storiesOf } from '@kadira/storybook';
-import { boolean } from '@kadira/storybook-addon-knobs';
+import { storiesOf } from '@storybook/react';
+import { withInfo } from '@storybook/addon-info';
+import { boolean } from '@storybook/addon-knobs';
 import {
   Table,
   TableHeader,
@@ -19,7 +20,7 @@ const records = new Array(6).join('_').split('').map((_, i) => [
 ]);
 
 storiesOf('Table', module)
-  .addWithInfo('Controlled with knobs', 'Table controlled with knobs', () => {
+  .add('Controlled with knobs', withInfo('Table controlled with knobs')(() => {
     const bordered = boolean('bordered');
     const sortable = boolean('sortable');
     const striped = boolean('striped');
@@ -34,13 +35,17 @@ storiesOf('Table', module)
       >
         <TableHeader hasActions={ hasActions }>
           <TableRow>
-            { headerNames.map(name => <TableHeaderColumn>{ name }</TableHeaderColumn>) }
+            {
+              headerNames.map(name => (
+                <TableHeaderColumn key={name}>{ name }</TableHeaderColumn>
+              ))
+            }
           </TableRow>
         </TableHeader>
         <TableBody>
           {
             records.map(record => (
-              <TableRow>
+              <TableRow key={record[0]}>
                 {
                   hasActions ?
                     <TableRowColumnActions>
@@ -51,111 +56,25 @@ storiesOf('Table', module)
                     </TableRowColumnActions> :
                     undefined
                 }
-                { headerNames.map((_, i) => <TableRowColumn>{ record[i] }</TableRowColumn>) }
+                {
+                  headerNames.map((name, i) => (
+                    <TableRowColumn key={name}>{ record[i] }</TableRowColumn>
+                  ))
+                }
               </TableRow>
             ))
           }
         </TableBody>
       </Table>
     );
-  })
-  .addWithInfo('Default', 'Default Table component', () => (
+  }))
+  .add('Default', withInfo('Default Table component')(() => (
     <Table bordered>
       <TableHeader>
         <TableRow>
-          { headerNames.map(name => <TableHeaderColumn>{ name }</TableHeaderColumn>) }
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {
-          records.map(record => (
-            <TableRow>
-              { headerNames.map((_, i) => <TableRowColumn>{ record[i] }</TableRowColumn>) }
-            </TableRow>
-          ))
-        }
-      </TableBody>
-    </Table>
-  ))
-  .addWithInfo('With Striped Row', 'Table component with striped row', () => (
-    <Table bordered striped>
-      <TableHeader>
-        <TableRow>
-          { headerNames.map(name => <TableHeaderColumn>{ name }</TableHeaderColumn>) }
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {
-          records.map(record => (
-            <TableRow>
-              { headerNames.map((_, i) => <TableRowColumn>{ record[i] }</TableRowColumn>) }
-            </TableRow>
-          ))
-        }
-      </TableBody>
-    </Table>
-  ))
-  .addWithInfo('With No Row Hover', 'Table component with row hovering highlight is disabled', () => (
-    <Table bordered noRowHover>
-      <TableHeader>
-        <TableRow>
-          { headerNames.map(name => <TableHeaderColumn>{ name }</TableHeaderColumn>) }
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {
-          records.map(record => (
-            <TableRow>
-              { headerNames.map((_, i) => <TableRowColumn>{ record[i] }</TableRowColumn>) }
-            </TableRow>
-          ))
-        }
-      </TableBody>
-    </Table>
-  ))
-  .addWithInfo('With Vertical Borders', 'Table component with vertical borders enabled', () => (
-    <Table bordered verticalBorders>
-      <TableHeader>
-        <TableRow>
-          { headerNames.map(name => <TableHeaderColumn>{ name }</TableHeaderColumn>) }
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {
-          records.map(record => (
-            <TableRow>
-              { headerNames.map((_, i) => <TableRowColumn>{ record[i] }</TableRowColumn>) }
-            </TableRow>
-          ))
-        }
-      </TableBody>
-    </Table>
-  ))
-  .addWithInfo('With Fixed Layout', 'Table component with fixed layout', () => (
-    <Table bordered fixedLayout>
-      <TableHeader>
-        <TableRow>
-          { headerNames.map(name => <TableHeaderColumn>{ name }</TableHeaderColumn>) }
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {
-          records.map(record => (
-            <TableRow>
-              { headerNames.map((_, i) => <TableRowColumn>{ record[i] }</TableRowColumn>) }
-            </TableRow>
-          ))
-        }
-      </TableBody>
-    </Table>
-  ))
-  .addWithInfo('With Sort Enabled', 'Table component with sort feature enabled ("Account Name" column is disabled)', () => (
-    <Table bordered sortable>
-      <TableHeader>
-        <TableRow>
           {
-            headerNames.map((name, i) => (
-              <TableHeaderColumn sortable={ i !== 1 }>{ name }</TableHeaderColumn>
+            headerNames.map(name => (
+              <TableHeaderColumn key={name}>{ name }</TableHeaderColumn>
             ))
           }
         </TableRow>
@@ -163,13 +82,147 @@ storiesOf('Table', module)
       <TableBody>
         {
           records.map(record => (
-            <TableRow>
-              { headerNames.map((_, i) => <TableRowColumn>{ record[i] }</TableRowColumn>) }
+            <TableRow key={record[0]}>
+              {
+                headerNames.map((name, i) => (
+                  <TableRowColumn key={name}>{ record[i] }</TableRowColumn>
+                ))
+              }
             </TableRow>
           ))
         }
       </TableBody>
     </Table>
-  ))
+  )))
+  .add('With Striped Row', withInfo('Table component with striped row')(() => (
+    <Table bordered striped>
+      <TableHeader>
+        <TableRow>
+          {
+            headerNames.map(name => (
+              <TableHeaderColumn key={name}>{ name }</TableHeaderColumn>
+            ))
+          }
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {
+          records.map(record => (
+            <TableRow key={record[0]}>
+              {
+                headerNames.map((name, i) => (
+                  <TableRowColumn key={name}>{ record[i] }</TableRowColumn>
+                ))
+              }
+            </TableRow>
+          ))
+        }
+      </TableBody>
+    </Table>
+  )))
+  .add('With No Row Hover', withInfo('Table component with row hovering highlight is disabled')(() => (
+    <Table bordered noRowHover>
+      <TableHeader>
+        <TableRow>
+          {
+            headerNames.map(name => (
+              <TableHeaderColumn key={name}>{ name }</TableHeaderColumn>
+            ))
+          }
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {
+          records.map(record => (
+            <TableRow key={record[0]}>
+              {
+                headerNames.map((name, i) => (
+                  <TableRowColumn key={name}>{ record[i] }</TableRowColumn>
+                ))
+              }
+            </TableRow>
+          ))
+        }
+      </TableBody>
+    </Table>
+  )))
+  .add('With Vertical Borders', withInfo('Table component with vertical borders enabled')(() => (
+    <Table bordered verticalBorders>
+      <TableHeader>
+        <TableRow>
+          {
+            headerNames.map(name => (
+              <TableHeaderColumn key={name}>{ name }</TableHeaderColumn>
+            ))
+          }
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {
+          records.map(record => (
+            <TableRow key={record[0]}>
+              {
+                headerNames.map((name, i) => (
+                  <TableRowColumn key={name}>{ record[i] }</TableRowColumn>
+                ))
+              }
+            </TableRow>
+          ))
+        }
+      </TableBody>
+    </Table>
+  )))
+  .add('With Fixed Layout', withInfo('Table component with fixed layout')(() => (
+    <Table bordered fixedLayout>
+      <TableHeader>
+        <TableRow>
+          {
+            headerNames.map(name => (
+              <TableHeaderColumn key={name}>{ name }</TableHeaderColumn>
+            ))
+          }
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {
+          records.map(record => (
+            <TableRow key={record[0]}>
+              {
+                headerNames.map((name, i) => (
+                  <TableRowColumn key={name}>{ record[i] }</TableRowColumn>
+                ))
+              }
+            </TableRow>
+          ))
+        }
+      </TableBody>
+    </Table>
+  )))
+  .add('With Sort Enabled', withInfo('Table component with sort feature enabled ("Account Name" column is disabled)')(() => (
+    <Table bordered sortable>
+      <TableHeader>
+        <TableRow>
+          {
+            headerNames.map((name, i) => (
+              <TableHeaderColumn key={name} sortable={ i !== 1 }>{ name }</TableHeaderColumn>
+            ))
+          }
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {
+          records.map(record => (
+            <TableRow key={record[0]}>
+              {
+                headerNames.map((name, i) => (
+                  <TableRowColumn key={name}>{ record[i] }</TableRowColumn>
+                ))
+              }
+            </TableRow>
+          ))
+        }
+      </TableBody>
+    </Table>
+  )))
 
 ;

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import svg4everybody from 'svg4everybody';
-import { getAssetRoot } from './util';
+import { registerStyle, getAssetRoot } from './util';
 
 svg4everybody();
 
@@ -90,6 +90,12 @@ export default class Icon extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    registerStyle('icon', [
+      [
+        '.slds-icon use',
+        '{ pointer-events: none; }',
+      ],
+    ]);
   }
 
   componentDidMount() {
@@ -138,7 +144,7 @@ export default class Icon extends Component {
 
   renderSVG({
     className, category = 'utility', icon, size, align, fillColor, container,
-    textColor = 'default', style, ...props
+    textColor = 'default', style, assetRoot, ...props
   }) {
     const iconColor = this.getIconColor(fillColor, category, icon);
     const iconClassNames = classnames(
@@ -157,7 +163,7 @@ export default class Icon extends Component {
     icon = (icon || '').replace(/[^\w\-]/g, ''); // eslint-disable-line no-param-reassign
     category = (category || '').replace(/[^\w\-]/g, ''); // eslint-disable-line no-param-reassign
 
-    const iconUrl = `${getAssetRoot()}/icons/${category}-sprite/svg/symbols.svg#${icon}`;
+    const iconUrl = `${assetRoot}/icons/${category}-sprite/svg/symbols.svg#${icon}`;
     return (
       <svg
         className={ iconClassNames }
@@ -173,6 +179,7 @@ export default class Icon extends Component {
 
   render() {
     const { container, title, ...props } = this.props;
+    const { assetRoot = getAssetRoot() } = this.context;
     let { category, icon } = props;
 
     if (icon.indexOf(':') > 0) {
@@ -189,12 +196,12 @@ export default class Icon extends Component {
       );
       return (
         <span title={ title } className={ ccontainerClassName } ref={ node => (this.iconContainer = node) }>
-          { this.renderSVG({ category, icon, fillColor: iconColor, container, ...pprops }) }
+          { this.renderSVG({ category, icon, fillColor: iconColor, container, assetRoot, ...pprops }) }
         </span>
       );
     }
 
-    return this.renderSVG({ ...props, category, icon });
+    return this.renderSVG({ ...props, category, icon, assetRoot });
   }
 }
 
@@ -213,6 +220,10 @@ Icon.propTypes = {
   tabIndex: PropTypes.number,
   title: PropTypes.string,
   fillColor: PropTypes.string,
+};
+
+Icon.contextTypes = {
+  assetRoot: PropTypes.string,
 };
 
 Icon.ICONS = {

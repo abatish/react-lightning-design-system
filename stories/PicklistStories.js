@@ -1,10 +1,12 @@
 import React from 'react';
-import { storiesOf, action } from '@kadira/storybook';
-import { text, boolean } from '@kadira/storybook-addon-knobs';
+import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
+import { withInfo } from '@storybook/addon-info';
+import { text, boolean } from '@storybook/addon-knobs';
 import { Picklist, PicklistItem } from '../src/scripts';
 
 storiesOf('Picklist', module)
-  .addWithInfo('Controlled with knobs', 'Picklist controlled with knobs', () => (
+  .add('Controlled with knobs', withInfo('Picklist controlled with knobs')(() => (
     <Picklist
       label={ text('label', 'Picklist Label') }
       error={ text('error') }
@@ -18,42 +20,39 @@ storiesOf('Picklist', module)
       onChange={ action('change') }
       onValueChange={ action('valueChange') }
       onBlur={ action('blur') }
-      onToggle={ action('onToggle') }
     >
       <PicklistItem label='Picklist Item One' value='1' disabled={ boolean('disabled #1') } />
       <PicklistItem label='Picklist Item Two' value='2' disabled={ boolean('disabled #2') } />
       <PicklistItem label='Picklist Item Three' value='3' disabled={ boolean('disabled #3') } />
     </Picklist>
-  ))
-  .addWithInfo('Default', 'Default Picklist control', () => (
+  )))
+  .add('Default', withInfo('Default Picklist control')(() => (
     <Picklist
       label='Picklist Label'
       selectedText='Select item from here'
       onChange={ action('change') }
       onValueChange={ action('valueChange') }
       onSelect={ action('select') }
-      onToggle={ action('onToggle') }
     >
-      <PicklistItem label='Picklist Item One' value='1' />
-      <PicklistItem label='Picklist Item Two' value='2' />
-      <PicklistItem label='Picklist Item Three' value='3' />
+      <PicklistItem label='Picklist Item One' value='1' key='1' />
+      <PicklistItem label='Picklist Item Two' value='2' key='2' />
+      <PicklistItem label='Picklist Item Three' value='3' key='3' />
     </Picklist>
-  ))
-  .addWithInfo('Required', 'Picklist control with required attribute', () => (
+  )))
+  .add('Required', withInfo('Picklist control with required attribute')(() => (
     <Picklist
       label='Picklist Label'
       required
       onChange={ action('change') }
       onValueChange={ action('valueChange') }
       onSelect={ action('select') }
-      onToggle={ action('onToggle') }
     >
-      <PicklistItem label='Picklist Item One' value='1' />
-      <PicklistItem label='Picklist Item Two' value='2' />
-      <PicklistItem label='Picklist Item Three' value='3' />
+      <PicklistItem label='Picklist Item One' value='1' key='1' />
+      <PicklistItem label='Picklist Item Two' value='2' key='2' />
+      <PicklistItem label='Picklist Item Three' value='3' key='3' />
     </Picklist>
-  ))
-  .addWithInfo('Error', 'Picklist control with error message', () => (
+  )))
+  .add('Error', withInfo('Picklist control with error message')(() => (
     <Picklist
       label='Picklist Label'
       required
@@ -61,41 +60,38 @@ storiesOf('Picklist', module)
       onChange={ action('change') }
       onValueChange={ action('valueChange') }
       onSelect={ action('select') }
-      onToggle={ action('onToggle') }
     >
-      <PicklistItem label='Picklist Item One' value='1' />
-      <PicklistItem label='Picklist Item Two' value='2' />
-      <PicklistItem label='Picklist Item Three' value='3' />
+      <PicklistItem label='Picklist Item One' value='1' key='1' />
+      <PicklistItem label='Picklist Item Two' value='2' key='2' />
+      <PicklistItem label='Picklist Item Three' value='3' key='3' />
     </Picklist>
-  ))
-  .addWithInfo('Disabled', 'Picklist with disabled items', () => (
+  )))
+  .add('Disabled', withInfo('Picklist with disabled items')(() => (
     <Picklist
       label='Picklist Label'
       onChange={ action('change') }
       onValueChange={ action('valueChange') }
       onSelect={ action('select') }
-      onToggle={ action('onToggle') }
     >
-      <PicklistItem label='Picklist Item One' value='1' disabled />
-      <PicklistItem label='Picklist Item Two' value='2' disabled />
-      <PicklistItem label='Picklist Item Three' value='3' disabled />
+      <PicklistItem label='Picklist Item One' value='1' key='1' disabled />
+      <PicklistItem label='Picklist Item Two' value='2' key='2' disabled />
+      <PicklistItem label='Picklist Item Three' value='3' key='3' disabled />
     </Picklist>
-  ))
-  .addWithInfo('Single item selected', 'Picklist with a single item value is specified', () => (
+  )))
+  .add('Single item selected', withInfo('Picklist with a single item value is specified')(() => (
     <Picklist
       label='Picklist Label'
       value='1'
       onChange={ action('change') }
       onValueChange={ action('valueChange') }
       onSelect={ action('select') }
-      onToggle={ action('onToggle') }
     >
-      <PicklistItem label='Picklist Item One' value='1' />
-      <PicklistItem label='Picklist Item Two' value='2' />
-      <PicklistItem label='Picklist Item Three' value='3' />
+      <PicklistItem label='Picklist Item One' value='1' key='1' />
+      <PicklistItem label='Picklist Item Two' value='2' key='2' />
+      <PicklistItem label='Picklist Item Three' value='3' key='3' />
     </Picklist>
-  ))
-  .addWithInfo('Multiple items selected', 'Picklist with multiple item values are specified', () => (
+  )))
+  .add('Multiple items selected', withInfo('Picklist with multiple item values are specified')(() => (
     <Picklist
       label='Picklist Label'
       value={ ['1', '3'] }
@@ -104,14 +100,13 @@ storiesOf('Picklist', module)
       onChange={ action('change') }
       onValueChange={ action('valueChange') }
       onSelect={ action('select') }
-      onToggle={ action('onToggle') }
     >
-      <PicklistItem label='Picklist Item One' value='1' />
-      <PicklistItem label='Picklist Item Two' value='2' />
-      <PicklistItem label='Picklist Item Three' value='3' />
+      <PicklistItem label='Picklist Item One' value='1' key='1' />
+      <PicklistItem label='Picklist Item Two' value='2' key='2' />
+      <PicklistItem label='Picklist Item Three' value='3' key='3' />
     </Picklist>
-  ))
-  .addWithInfo('Dropdown Scroll', 'Picklist control with many items', () => (
+  )))
+  .add('Dropdown Scroll', withInfo('Picklist control with many items')(() => (
     <div tabIndex='-1'>
       <Picklist
         label='Picklist Label'
@@ -123,14 +118,13 @@ storiesOf('Picklist', module)
         onComplete={ action('complete') }
         menuSize='small'
         menuStyle={ { maxHeight: '20rem', overflowY: 'auto' } }
-        onToggle={ action('onToggle') }
       >
         {
           Array.from(Array(20)).map((_, i) => (
-            <PicklistItem label={ `Picklist Item #${i + 1}` } value={ String(i + 1) } />
+            <PicklistItem label={ `Picklist Item #${i + 1}` } value={ String(i + 1) } key={ String(i + 1) } />
           ))
         }
       </Picklist>
     </div>
-  ))
+  )))
 ;

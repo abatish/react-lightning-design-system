@@ -23,7 +23,6 @@ export default class Checkbox extends Component {
     DOMpurify.removeHook('afterSanitizeAttributes');
   }
 
-
   componentWillReceiveProps(nextProps) {
     const input = this.node.getElementsByTagName('input')[0];
     if (nextProps.defaultChecked !== input.checked) {
