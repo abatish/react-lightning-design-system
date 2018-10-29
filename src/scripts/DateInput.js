@@ -138,7 +138,7 @@ export default class DateInput extends Component {
   }
 
   onInputBlur(e) {
-      this.setValueFromInput(e.target.value);
+    this.setValueFromInput(e.target.value);
 
     setTimeout(() => {
       if (!this.isFocusedInComponent()) {
@@ -208,12 +208,9 @@ export default class DateInput extends Component {
 
   setValueFromInput(inputValue) {
     let value = this.state.value;
-    if (!inputValue) {
-      value = '';
-    } else {
-      value = moment(inputValue, this.getInputValueFormat());
-      if (value.isValid()) {
-        value = value.format(this.getValueFormat());
+    if(value !== inputValue){
+      if (!inputValue) {
+        value = '';
       } else {
         value = moment(inputValue, this.getInputValueFormat());
         if (value.isValid()) {
@@ -290,7 +287,7 @@ export default class DateInput extends Component {
         this.state.inputValue :
       typeof dateValue !== 'undefined' && mvalue.isValid() ?
         mvalue.format(this.getInputValueFormat()) :
-          undefined;
+          '';
     const formElemProps = { id, totalCols, cols, label, required, error };
     delete props.dateFormat;
     delete props.defaultOpened;
@@ -330,6 +327,7 @@ const MENU_ALIGN = ['left', 'right'];
 
 DateInput.propTypes = {
   id: PropTypes.string,
+  className: PropTypes.string,
   label: PropTypes.string,
   required: PropTypes.bool,
   error: FormElement.propTypes.error,

@@ -95,5 +95,5 @@ Checkbox.propTypes = {
   ]),
   checked: PropTypes.bool,
   disabled: PropTypes.bool,
-  defaultChecked: PropTypes.bool,
+  defaultChecked: PropTypes.bool
 };

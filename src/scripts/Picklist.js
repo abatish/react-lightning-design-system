@@ -21,30 +21,41 @@ export default class Picklist extends Component {
     };
   }
 
-  onClick = () => {
-    this.setState({ opened: !this.state.opened });
+  onClick = (e) => {
+    const { onToggle } = this.props;
+
+    let newToggleState = !this.state.opened;
+    this.setState({ opened: newToggleState });
+    onToggle && onToggle(e, newToggleState);
+
     setTimeout(() => {
       this.focusToTargetItemEl();
     }, 10);
   };
 
   onPicklistItemClick = (item, e) => {
-    const { multiSelect } = this.props;
-    this.updateItemValue(item.value);
+    const { multiSelect, onChange, onSelect, onComplete, onToggle } = this.props;
 
-    if (this.props.onChange) {
-      this.props.onChange(e, item.value);
+    let finalItem = { value: '' };
+    if (item.selected === false || multiSelect) {
+      finalItem = item;
     }
-    if (this.props.onSelect) {
-      this.props.onSelect(item);
-    }
+
+    this.updateItemValue(finalItem.value);
+
+    onChange && onChange(e, finalItem.value);
+    onSelect && onSelect(finalItem);
+
     if (!multiSelect) {  // close if only single select
       setTimeout(() => {
-        this.setState({ opened: false });
-        if (this.props.onComplete) {
-          this.props.onComplete();
-        }
+        const opened = false;
         const picklistButtonEl = this.picklistButton;
+
+        this.setState({ opened: opened });
+
+        onComplete && onComplete();
+        onToggle && onToggle(e, opened);
+
         if (picklistButtonEl) {
           picklistButtonEl.focus();
         }
@@ -54,22 +65,26 @@ export default class Picklist extends Component {
     e.stopPropagation();
   };
 
-  onPicklistClose = () => {
+  onPicklistClose = (e) => {
+    const { onToggle } = this.props;
+    const opened = false;
     const picklistButtonEl = this.picklistButton;
-    picklistButtonEl.focus();
-    this.setState({ opened: false });
-  };
 
-  onBlur = () => {
+    picklistButtonEl.focus();
+    this.setState({ opened: opened });
+    onToggle && onToggle(e, opened);
+};
+
+  onBlur = (e) => {
     setTimeout(() => {
       if (!this.isFocusedInComponent()) {
-        this.setState({ opened: false });
-        if (this.props.onBlur) {
-          this.props.onBlur();
-        }
-        if (this.props.onComplete) {
-          this.props.onComplete();
-        }
+        const { onBlur, onComplete, onToggle } = this.props;
+        const opened = false;
+
+        this.setState({ opened: opened });
+        onBlur && onBlur();
+        onComplete && onComplete();
+        onToggle && onToggle(e, opened);
       }
     }, 10);
   };
