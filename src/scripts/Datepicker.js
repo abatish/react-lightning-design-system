@@ -339,7 +339,4 @@ Datepicker.propTypes = {
   onSelect: PropTypes.func,
   onBlur: PropTypes.func,
   onClose: PropTypes.func,
-  minDate: PropTypes.string,
-  maxDate: PropTypes.string,
-  extensionRenderer: PropTypes.func,
 };
