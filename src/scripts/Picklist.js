@@ -23,19 +23,18 @@ export default class Picklist extends Component {
 
   onClick = (e) => {
     const { onToggle } = this.props;
-
     let newToggleState = !this.state.opened;
     this.setState({ opened: newToggleState });
-    onToggle && onToggle(e, newToggleState);
-
+    onToggle && onToggle(e, newToggleState);  
     setTimeout(() => {
       this.focusToTargetItemEl();
     }, 10);
   };
 
+
   onPicklistItemClick = (item, e) => {
     const { multiSelect, onChange, onSelect, onComplete, onToggle } = this.props;
-
+    // this.updateItemValue(item.value);
     let finalItem = { value: '' };
     if (item.selected === false || multiSelect) {
       finalItem = item;
@@ -52,7 +51,6 @@ export default class Picklist extends Component {
         const picklistButtonEl = this.picklistButton;
 
         this.setState({ opened: opened });
-
         onComplete && onComplete();
         onToggle && onToggle(e, opened);
 
@@ -69,18 +67,17 @@ export default class Picklist extends Component {
     const { onToggle } = this.props;
     const opened = false;
     const picklistButtonEl = this.picklistButton;
-
     picklistButtonEl.focus();
+
     this.setState({ opened: opened });
     onToggle && onToggle(e, opened);
-};
-
+  };
+  
   onBlur = (e) => {
     setTimeout(() => {
       if (!this.isFocusedInComponent()) {
         const { onBlur, onComplete, onToggle } = this.props;
         const opened = false;
-
         this.setState({ opened: opened });
         onBlur && onBlur();
         onComplete && onComplete();
@@ -254,9 +251,8 @@ export default class Picklist extends Component {
 
   render() {
     const id = this.props.id || this.state.id;
-    const { label, required, error, totalCols, cols, menuSize, menuStyle, ...props } = this.props;
-    const dropdown = this.renderDropdown(menuSize, menuStyle);
-    const formElemProps = { id, label, required, error, totalCols, cols, dropdown };
+    const { label, required, error, totalCols, cols, ...props } = this.props;
+    const formElemProps = { id, label, required, error, totalCols, cols };
     return (
       <FormElement formElementRef={ node => (this.node = node) } { ...formElemProps }>
         { this.renderPicklist({ ...props, id }) }
@@ -313,7 +309,9 @@ Picklist.defaultProps = {
   optionsSelectedText: '',
 };
 
+
 Picklist.isFormElement = true;
+
 
 export const PicklistItem = ({ label, selected, children, ...props }) => (
   <DropdownMenuItem
@@ -338,3 +336,4 @@ PicklistItem.propTypes = {
   ]),
   children: PropTypes.node,
 };
+

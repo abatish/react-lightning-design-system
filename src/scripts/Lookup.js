@@ -15,6 +15,17 @@ import { uuid, isElInChildren, registerStyle } from './util';
 /**
  *
  */
+const LookupEntryType = PropTypes.shape({
+  category: PropTypes.string,
+  icon: PropTypes.string,
+  label: PropTypes.string,
+  value: PropTypes.string,
+  meta: PropTypes.string,
+});
+
+/**
+ *
+ */
 export class LookupSelection extends Component {
   static propTypes = {
     id: PropTypes.string,
@@ -74,21 +85,6 @@ export class LookupSelection extends Component {
 
 }
 
-const LookupEntryType = PropTypes.shape({
-  category: PropTypes.string,
-  icon: PropTypes.string,
-  label: PropTypes.string,
-  value: PropTypes.string,
-  meta: PropTypes.string,
-});
-
-LookupSelection.propTypes = {
-  id: PropTypes.string,
-  selected: LookupEntryType,
-  hidden: PropTypes.bool,
-  onResetSelection: PropTypes.func,
-  lookupSelectionRef: PropTypes.func,
-};
 
 /**
  *
@@ -405,19 +401,19 @@ class LookupCandidateList extends Component {
           onBlur={ this.props.onBlur }
           onClick={ () => this.onSelect(entry) }
         >
-          <span className='slds-media slds-media--center slds-truncate' style={ { display: 'inline-flex', alignItems: 'center' } }>
+          <span className='slds-truncate' style={ { display: 'inline-flex', alignItems: 'center' } }>
             {
               icon ?
                 <Icon
                   style={ { minWidth: '1.5rem' } }
-                  className='slds-media__figure slds-m-right--x-small'
+                  className='slds-m-right--x-small'
                   category={ category }
                   icon={ icon }
                   size='small'
                 /> :
                 undefined
             }
-            <div className='slds-media__body slds-truncate'>
+            <div className='slds-truncate'>
               <span className='slds-lookup__result-text slds-truncate'>{ label }</span>
               {
                 meta ?
@@ -434,11 +430,11 @@ class LookupCandidateList extends Component {
   render() {
     const trueFilter = () => true;
     const {
-      data = [], hidden, loading, header, footer, filter = trueFilter,
+      data = [], loading, header, footer, filter = trueFilter,
       align, vertAlign,
       listRef,
     } = this.props;
-    const lookupMenuClassNames = classnames('slds-lookup__menu', { 'slds-hide': hidden, 'slds-show': !hidden });
+    const lookupMenuClassNames = classnames('slds-lookup__menu', 'slds-show');
     const listStyles = {
       minWidth: '15rem',
       ...(vertAlign === 'bottom' ? { bottom: '100%' } : {}),
@@ -667,27 +663,12 @@ export default class Lookup extends Component {
       onComplete,
       ...props
     } = this.props;
-    const dropdown = (
-      <LookupCandidateList
-        ref={ node => (this.candidateList = node) }
-        data={ data }
-        focus={ this.state.focusFirstCandidate }
-        hidden={ !opened || (!loading && data.length === 0) }
-        loading={ loading }
-        filter={ lookupFilter ? entry => lookupFilter(entry, searchText, targetScope) : undefined }
-        header={ listHeader }
-        footer={ listFooter }
-        onSelect={ this.onLookupItemSelect.bind(this) }
-        onBlur={ this.onBlur.bind(this) }
-      />
-    );
-
     const lookupClassNames = classnames(
       'slds-lookup',
       { 'slds-has-selection': selected },
       className
     );
-    const formElemProps = { id, totalCols, cols, label, required, error, dropdown };
+    const formElemProps = { id, totalCols, cols, label, required, error };
     /* eslint-disable no-unused-vars */
     const {
       defaultSelected, defaultOpened, defaultSearchText, defaultTargetScope,
@@ -749,46 +730,3 @@ export default class Lookup extends Component {
     );
   }
 }
-
-
-Lookup.propTypes = {
-  id: PropTypes.string,
-  className: PropTypes.string,
-  label: PropTypes.string,
-  required: PropTypes.bool,
-  error: FormElement.propTypes.error,
-  value: PropTypes.string,
-  defaultValue: PropTypes.string,
-  selected: LookupEntryType,
-  defaultSelected: LookupEntryType,
-  opened: PropTypes.bool,
-  defaultOpened: PropTypes.bool,
-  searchText: PropTypes.string,
-  defaultSearchText: PropTypes.string,
-  loading: PropTypes.bool,
-  data: PropTypes.arrayOf(LookupEntryType),
-  lookupFilter: PropTypes.func,
-  listHeader: PropTypes.node,
-  listFooter: PropTypes.node,
-  scopes: PropTypes.arrayOf(
-    PropTypes.shape({
-      label: PropTypes.string,
-      value: PropTypes.string,
-      icon: PropTypes.string,
-    })
-  ),
-  targetScope: PropTypes.string,
-  iconAlign: PropTypes.oneOf(ICON_ALIGNS),
-  defaultTargetScope: PropTypes.string,
-  onSearchTextChange: PropTypes.func,
-  onScopeMenuClick: PropTypes.func,
-  onScopeChange: PropTypes.func,
-  onLookupRequest: PropTypes.func,
-  onBlur: PropTypes.func,
-  onSelect: PropTypes.func,
-  onComplete: PropTypes.func,
-  totalCols: PropTypes.number,
-  cols: PropTypes.number,
-};
-
-Lookup.isFormElement = true;

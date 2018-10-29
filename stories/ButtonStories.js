@@ -76,6 +76,9 @@ const stories = storiesOf('Button', module)
   .add('Neutral', withInfo('Neutral type button')(() => (
     <Button type='neutral' onClick={ action('neutral clicked') }>Neutral</Button>
   )))
+  .add('Button with title', withInfo('Button when hovered shows title')(() => (
+    <Button type='neutral' title='Hovered Text' onClick={ action('neutral clicked') }>Button with hover title</Button>
+  )))
   .add('Neutral disabled', withInfo('Neutral type button but disabled')(() => (
     <Button type='neutral' disabled onClick={ action('should not be clicked') }>Disabled Neutral</Button>
   )))
