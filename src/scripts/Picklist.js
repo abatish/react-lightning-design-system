@@ -5,7 +5,7 @@ import FormElement from './FormElement';
 import Icon from './Icon';
 import Button from './Button';
 import { default as DropdownMenu, DropdownMenuItem } from './DropdownMenu';
-import { uuid } from './util';
+import { uuid, isElInChildren } from './util';
 
 
 export default class Picklist extends Component {
@@ -23,19 +23,18 @@ export default class Picklist extends Component {
 
   onClick = (e) => {
     const { onToggle } = this.props;
-
     let newToggleState = !this.state.opened;
     this.setState({ opened: newToggleState });
-    onToggle && onToggle(e, newToggleState);
-    
+    onToggle && onToggle(e, newToggleState);  
     setTimeout(() => {
       this.focusToTargetItemEl();
     }, 10);
   };
 
+
   onPicklistItemClick = (item, e) => {
     const { multiSelect, onChange, onSelect, onComplete, onToggle } = this.props;
-
+    // this.updateItemValue(item.value);
     let finalItem = { value: '' };
     if (item.selected === false || multiSelect) {
       finalItem = item;
@@ -52,7 +51,6 @@ export default class Picklist extends Component {
         const picklistButtonEl = this.picklistButton;
 
         this.setState({ opened: opened });
-
         onComplete && onComplete();
         onToggle && onToggle(e, opened);
 
@@ -70,18 +68,17 @@ export default class Picklist extends Component {
     const opened = false;
     const picklistButtonEl = this.picklistButton;
     picklistButtonEl.focus();
+
     this.setState({ opened: opened });
     onToggle && onToggle(e, opened);
   };
-
+  
   onBlur = (e) => {
     setTimeout(() => {
       if (!this.isFocusedInComponent()) {
         const { onBlur, onComplete, onToggle } = this.props;
         const opened = false;
-
         this.setState({ opened: opened });
-
         onBlur && onBlur();
         onComplete && onComplete();
         onToggle && onToggle(e, opened);
@@ -186,16 +183,13 @@ export default class Picklist extends Component {
   }
 
   isFocusedInComponent() {
-    const rootEl = this.node;
-    let targetEl = document.activeElement;
-    while (targetEl && targetEl !== rootEl) {
-      targetEl = targetEl.parentNode;
-    }
-    return !!targetEl;
+    const targetEl = document.activeElement;
+    return isElInChildren(this.node, targetEl) || isElInChildren(this.dropdown, targetEl);
   }
 
   focusToTargetItemEl() {
     const dropdownEl = this.dropdown;
+    if (!dropdownEl) { return; }
     const firstItemEl =
       dropdownEl.querySelector('.slds-is-selected > .react-slds-menuitem[tabIndex]') ||
       dropdownEl.querySelector('.react-slds-menuitem[tabIndex]');
@@ -205,8 +199,8 @@ export default class Picklist extends Component {
   }
 
   renderPicklist(props) {
-    const { className, id, ...pprops } = props;
-    const picklistClassNames = classnames(className, 'slds-picklist');
+    const { className, id, disabled, menuSize, menuStyle, ...pprops } = props;
+    const picklistClassNames = classnames(className, 'slds-picklist', 'slds-dropdown-trigger');
     delete pprops.onValueChange;
     return (
       <div className={ picklistClassNames } aria-expanded={ this.state.opened }>
@@ -215,24 +209,27 @@ export default class Picklist extends Component {
           buttonRef={ node => (this.picklistButton = node) }
           className='slds-picklist__label'
           type='neutral'
-          onClick={ this.onClick }
-          onBlur={ this.onBlur }
-          onKeyDown={ this.onKeydown }
+          disabled={ disabled }
+          onClick={ !disabled && this.onClick }
+          onBlur={ !disabled && this.onBlur }
+          onKeyDown={ !disabled && this.onKeydown }
         >
           <span className='slds-truncate'>
             { this.getSelectedItemLabel() || <span>&nbsp;</span> }
           </span>
           <Icon icon='down' />
         </Button>
+        { this.renderDropdown(menuSize, menuStyle) }
       </div>
     );
   }
 
   renderDropdown(menuSize, menuStyle) {
-    const { children } = this.props;
+    const { className, children } = this.props;
     return (
       this.state.opened ?
         <DropdownMenu
+          portalClassName={ classnames(className, 'slds-picklist') }
           dropdownMenuRef={ node => (this.dropdown = node) }
           size={ menuSize }
           onMenuItemClick={ this.onPicklistItemClick }
@@ -254,9 +251,8 @@ export default class Picklist extends Component {
 
   render() {
     const id = this.props.id || this.state.id;
-    const { label, required, error, totalCols, cols, menuSize, menuStyle, ...props } = this.props;
-    const dropdown = this.renderDropdown(menuSize, menuStyle);
-    const formElemProps = { id, label, required, error, totalCols, cols, dropdown };
+    const { label, required, error, totalCols, cols, ...props } = this.props;
+    const formElemProps = { id, label, required, error, totalCols, cols };
     return (
       <FormElement formElementRef={ node => (this.node = node) } { ...formElemProps }>
         { this.renderPicklist({ ...props, id }) }
@@ -293,6 +289,7 @@ Picklist.propTypes = {
   ]),
   selectedText: PropTypes.string,
   defaultOpened: PropTypes.bool,
+  disabled: PropTypes.bool,
   onChange: PropTypes.func,
   onValueChange: PropTypes.func,
   onSelect: PropTypes.func,
@@ -339,3 +336,4 @@ PicklistItem.propTypes = {
   ]),
   children: PropTypes.node,
 };
+
