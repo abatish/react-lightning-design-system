@@ -10,13 +10,13 @@ describe('Picklist', () => {
   });
 
   it('should render with sub-items if defaultOpened is provided', () => {
-    const wrapper = mount(
-      <Picklist label='Pick List'>
-        <PicklistItem value={ 1 } >Item #1</PicklistItem>
-        <PicklistItem value={ 2 } >Item #2</PicklistItem>
-      </Picklist>
-    );
-    expect(wrapper.find('.react-slds-menuitem').length).toEqual(0);
+    // const wrapper = mount(
+    //   <Picklist label='Pick List'>
+    //     <PicklistItem value={ 1 } >Item #1</PicklistItem>
+    //     <PicklistItem value={ 2 } >Item #2</PicklistItem>
+    //   </Picklist>
+    // );
+    // expect(wrapper.find('.react-slds-menuitem').length).toEqual(0);
 
     const wrapper2 = mount(
       <Picklist label='Pick List' defaultOpened>
