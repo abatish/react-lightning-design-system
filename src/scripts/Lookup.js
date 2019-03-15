@@ -130,8 +130,8 @@ export class LookupSearch extends Component {
           this.props.onComplete();
         }
       }
-      if (this.props.onEnter) {
-        this.props.onEnter(e);
+      if (this.props.onReturnKey) {
+        this.props.onReturnKey(e);
       }
     } else if (e.keyCode === 40) { // down key
       e.preventDefault();
@@ -205,7 +205,7 @@ export class LookupSearch extends Component {
     delete pprops.onScopeChange;
     delete pprops.onPressDown;
     delete pprops.onComplete;
-    delete pprops.onEnter;
+    delete pprops.onReturnKey;
     delete pprops.defaultTargetScope;
     delete pprops.onSearchTextChange;
     delete pprops.scopes;
@@ -314,7 +314,7 @@ LookupSearch.propTypes = {
   onPressDown: PropTypes.func,
   onSubmit: PropTypes.func,
   onComplete: PropTypes.func,
-  onEnter: PropTypes.func,
+  onReturnKey: PropTypes.func,
   lookupSearchRef: PropTypes.func,
 };
 
@@ -600,7 +600,7 @@ export default class Lookup extends Component {
       listHeader, listFooter,
       data,
       onComplete, 
-      onEnter, 
+      onReturnKey, 
       ...props
     } = this.props;
     const dropdown = (
@@ -659,7 +659,7 @@ export default class Lookup extends Component {
                   onSubmit={ () => this.onLookupRequest(searchText) }
                   onPressDown={ this.onFocusFirstCandidate.bind(this) }
                   onComplete={ onComplete }
-                  onEnter={ onEnter }
+                  onReturnKey={ onReturnKey }
                   onBlur={ this.onBlur.bind(this) }
                   onClick={this.onSearchInputClick.bind(this)}
                 />
