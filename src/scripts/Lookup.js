@@ -130,7 +130,9 @@ export class LookupSearch extends Component {
           this.props.onComplete();
         }
       }
-      this.props.onEnter(e);
+      if (this.props.onEnter) {
+        this.props.onEnter(e);
+      }
     } else if (e.keyCode === 40) { // down key
       e.preventDefault();
       e.stopPropagation();
