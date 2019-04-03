@@ -21,11 +21,12 @@ export class LookupSelection extends Component {
     }
   }
 
-  renderPill(selected) {
+  renderPill(selected, onSelectedOptionClick) {
     const onPillClick = (e) => {
       e.target.focus();
       e.preventDefault();
       e.stopPropagation();
+      onSelectedOptionClick && onSelectedOptionClick();
     };
     return (
       <Pill
@@ -46,14 +47,14 @@ export class LookupSelection extends Component {
   }
 
   render() {
-    const { hidden, selected, lookupSelectionRef } = this.props;
+    const { hidden, selected, lookupSelectionRef, onSelectedOptionClick } = this.props;
     const lookupClassNames = classnames(
       { 'slds-hide': hidden }
     );
     return (
       <div ref={ lookupSelectionRef } className={ lookupClassNames }>
         <div className='slds-pill__container'>
-          { selected ? this.renderPill(selected) : undefined }
+          { selected ? this.renderPill(selected, onSelectedOptionClick) : undefined }
         </div>
       </div>
     );
@@ -75,6 +76,7 @@ LookupSelection.propTypes = {
   hidden: PropTypes.bool,
   onResetSelection: PropTypes.func,
   lookupSelectionRef: PropTypes.func,
+  onSelectedOptionClick: PropTypes.func
 };
 
 
@@ -599,8 +601,8 @@ export default class Lookup extends Component {
       loading, lookupFilter,
       listHeader, listFooter,
       data,
-      onComplete, 
-      onReturnKey, 
+      onComplete,
+      onReturnKey,
       ...props
     } = this.props;
     const dropdown = (
@@ -628,6 +630,7 @@ export default class Lookup extends Component {
     const {
       defaultSelected, defaultOpened, defaultSearchText, defaultTargetScope,
       onSelect, onBlur, onScopeChange, onScopeMenuClick, onSearchTextChange, onLookupRequest,
+      onSelectedOptionClick,
       ...searchProps
     } = props;
     /* eslint-enable no-unused-vars */
@@ -646,6 +649,7 @@ export default class Lookup extends Component {
                 lookupSelectionRef={ node => (this.selection = node) }
                 selected={ selected }
                 onResetSelection={ this.onResetSelection.bind(this) }
+                onSelectedOptionClick={ this.props.onSelectedOptionClick }
               /> :
                 <LookupSearch
                   { ...searchProps }
@@ -706,6 +710,7 @@ Lookup.propTypes = {
   onLookupRequest: PropTypes.func,
   onBlur: PropTypes.func,
   onSelect: PropTypes.func,
+  onSelectedOptionClick: PropTypes.func,
   onComplete: PropTypes.func,
   totalCols: PropTypes.number,
   cols: PropTypes.number,

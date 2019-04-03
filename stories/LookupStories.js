@@ -332,4 +332,16 @@ storiesOf('Lookup', module)
       onComplete={ action('complete') }
     />
   ))
+  .addWithInfo('Click selected Pill', 'Lookup component whose selected option pill can be clicked', () => (
+    <Lookup
+      label='Lookup Label'
+      selected={ COMPANY_DATA[0] }
+      onSearchTextChange={ action('searchTextChange') }
+      onLookupRequest={ action('lookupRequest') }
+      onSelect={ action('select') }
+      onBlur={ action('blur') }
+      onComplete={ action('complete') }
+      onSelectedOptionClick={ action('selectedOptionClicked') }
+    />
+  ))
 ;
