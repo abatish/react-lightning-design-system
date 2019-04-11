@@ -649,7 +649,7 @@ export default class Lookup extends Component {
                 lookupSelectionRef={ node => (this.selection = node) }
                 selected={ selected }
                 onResetSelection={ this.onResetSelection.bind(this) }
-                onSelectedOptionClick={ this.props.onSelectedOptionClick }
+                onSelectedOptionClick={ onSelectedOptionClick }
               /> :
                 <LookupSearch
                   { ...searchProps }
