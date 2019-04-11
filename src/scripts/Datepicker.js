@@ -296,10 +296,10 @@ export default class Datepicker extends Component {
 
   render() {
     const {
-      className, selectedDate, minDate, maxDate,
+      className, selectedDate, minDate, maxDate, dateToday,
       extensionRenderer: ExtensionRenderer,
     } = this.props;
-    const today = getToday();
+    const today = dateToday || getToday();
     const targetDate = this.state.targetDate || selectedDate;
     const cal = createCalendarObject(targetDate, minDate, maxDate);
     const datepickerClassNames = classnames('slds-datepicker', className);
@@ -334,5 +334,6 @@ Datepicker.propTypes = {
   onClose: PropTypes.func,
   minDate: PropTypes.string,
   maxDate: PropTypes.string,
+  dateToday: PropTypes.string,
   extensionRenderer: PropTypes.func,
 };
