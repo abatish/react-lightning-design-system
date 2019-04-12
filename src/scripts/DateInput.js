@@ -207,7 +207,7 @@ export default class DateInput extends Component {
     );
   }
 
-  renderDropdown(dateValue, minDate, maxDate, extensionRenderer, autoFocus) {
+  renderDropdown(dateValue, minDate, maxDate, extensionRenderer, autoFocus, dateToday) {
     const datepickerClassNames = classnames(
       'slds-dropdown',
       `slds-dropdown--${this.props.menuAlign}`
@@ -220,6 +220,7 @@ export default class DateInput extends Component {
           autoFocus={ autoFocus }
           minDate={minDate}
           maxDate={maxDate}
+          dateToday={dateToday}
           extensionRenderer={ extensionRenderer }
           onSelect={ this.onDatepickerSelect }
           onBlur={ this.onDatepickerBlur }
@@ -233,7 +234,7 @@ export default class DateInput extends Component {
     const {
       totalCols, cols, label, required, error,
       defaultValue, value, menuAlign,
-      minDate, maxDate,
+      minDate, maxDate, dateToday,
       extensionRenderer,
       ...props
     } = this.props;
@@ -255,7 +256,8 @@ export default class DateInput extends Component {
       minDate,
       maxDate,
       extensionRenderer,
-      autoFocus
+      autoFocus,
+      dateToday
     );
     const formElemProps = { id, totalCols, cols, label, required, error, dropdown };
     delete props.dateFormat;
@@ -296,6 +298,7 @@ DateInput.propTypes = {
   menuAlign: PropTypes.oneOf(MENU_ALIGN),
   minDate: PropTypes.string,
   maxDate: PropTypes.string,
+  dateToday: PropTypes.string,
   extensionRenderer: PropTypes.func,
 };
 
