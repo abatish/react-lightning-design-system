@@ -78,8 +78,9 @@ export default class Datepicker extends Component {
   }
 
   componentDidMount() {
-    if (this.props.autoFocus) {
-      const targetDate = this.props.selectedDate || getToday();
+    const { autoFocus, selectedDate, dateToday } = this.props;
+    if (autoFocus) {
+      const targetDate = selectedDate || dateToday || getToday();
       this.focusDate(targetDate);
     }
   }
