@@ -1,6 +1,6 @@
 {
   "name": "react-lightning-design-system",
-  "version": "2.4.24",
+  "version": "2.4.25",
   "description": "Salesforce Lightning Design System components built with React",
   "main": "lib/scripts/index.js",
   "keywords": [
@@ -47,6 +47,7 @@
     "keycoder": "^1.1.1",
     "moment": "^2.13.0",
     "prop-types": "15.6.0",
+    "react-escape-outside": "^0.1.1",
     "svg4everybody": "^2.0.3",
     "uuid": "^2.0.2"
   },

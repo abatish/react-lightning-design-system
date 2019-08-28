@@ -6,6 +6,7 @@ import Icon from './Icon';
 import Button from './Button';
 import { default as DropdownMenu, DropdownMenuItem } from './DropdownMenu';
 import { uuid } from './util';
+import EscapeOutside from "react-escape-outside"
 
 
 export default class Picklist extends Component {
@@ -19,6 +20,13 @@ export default class Picklist extends Component {
       opened: props.defaultOpened,
       value: Array.isArray(initialValue) ? initialValue : [initialValue],
     };
+
+    this.handleEscapeOutside = this.handleEscapeOutside.bind(this);
+  }
+
+  handleEscapeOutside() {
+    const opened = false;
+    this.setState({ opened: opened });
   }
 
   onClick = (e) => {
@@ -258,9 +266,12 @@ export default class Picklist extends Component {
     const dropdown = this.renderDropdown(menuSize, menuStyle);
     const formElemProps = { id, label, required, error, totalCols, cols, dropdown };
     return (
-      <FormElement formElementRef={ node => (this.node = node) } { ...formElemProps }>
-        { this.renderPicklist({ ...props, id }) }
-      </FormElement>
+      <EscapeOutside onEscapeOutside={ this.handleEscapeOutside }>
+        <FormElement formElementRef={ node => (this.node = node) } { ...formElemProps }>
+          { this.renderPicklist({ ...props, id }) }
+        </FormElement>
+      </EscapeOutside>
+
     );
   }
 }
