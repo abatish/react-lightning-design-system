@@ -267,10 +267,9 @@ export default class Picklist extends Component {
     const formElemProps = { id, label, required, error, totalCols, cols, dropdown };
     return (
       <EscapeOutside onEscapeOutside={ this.handleEscapeOutside }>
-
-      <FormElement formElementRef={ node => (this.node = node) } { ...formElemProps }>
-        { this.renderPicklist({ ...props, id }) }
-      </FormElement>
+        <FormElement formElementRef={ node => (this.node = node) } { ...formElemProps }>
+          { this.renderPicklist({ ...props, id }) }
+        </FormElement>
       </EscapeOutside>
 
     );
