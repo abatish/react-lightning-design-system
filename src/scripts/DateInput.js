@@ -96,7 +96,9 @@ export default class DateInput extends Component {
   }
 
   onInputClick() {
-    this.showDatepicker(false);
+    if (this.props.focusOnOpen) {
+      this.showDatepicker(false);
+    }
   }
 
   onDatepickerSelect(dvalue) {
@@ -300,10 +302,12 @@ DateInput.propTypes = {
   maxDate: PropTypes.string,
   dateToday: PropTypes.string,
   extensionRenderer: PropTypes.func,
+  focusOnOpen: PropTypes.bool
 };
 
 DateInput.defaultProps = {
   menuAlign: 'left',
+  focusOnOpen: true
 };
 
 DateInput.isFormElement = true;
