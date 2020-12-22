@@ -374,8 +374,9 @@ export class LookupCandidateList extends Component {
 
   renderCandidate(entry) {
     const { category, icon, label, value, meta } = entry;
+    const key = `${value}-${label}`;
     return (
-      <li key={ value } role='presentation'>
+      <li key={ key } role='presentation'>
         <a
           className='slds-lookup__item-action react-slds-candidate'
           tabIndex={ -1 }
