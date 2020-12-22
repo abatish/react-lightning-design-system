@@ -51,3 +51,4 @@ This repo ships with story snapshots to examine differences in rendering as a re
 
 To identify render differences run ```npm run test:storyshots```.  If  all changes are intentional run ```npm run test:storyshots -- -u```.  To learn about other run options including *interactive mode*, read
 [Snapshot Testing in React Storybook](https://voice.kadira.io/snapshot-testing-in-react-storybook-43b3b71cec4f)
+
